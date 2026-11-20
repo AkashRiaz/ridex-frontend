@@ -27,7 +27,8 @@ import { Button } from "@/components/ui/button";
 import { logout } from "@/app/(authGroup)/_actions/authActions";
 import { Bike, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import { NavbarProps } from "@/lib/type";
-import { getDashboardPath } from "@/lib/dashboardPath";
+import { getDashboardPath, getProfilePath } from "@/lib/dashboardPath";
+import { UserAvatar } from "./UserAvatar";
 import { siteConfig } from "@/lib/siteConfig";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -147,15 +148,17 @@ export function Navbar({ user }: NavbarProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
-                    <Button
+                    <button
                       type="button"
-                      variant="outline"
-                      size="icon"
                       aria-label="Open user menu"
-                      className="rounded-full"
+                      className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
-                      <User className="size-5" />
-                    </Button>
+                      <UserAvatar
+                        name={user.data?.name}
+                        imageUrl={user.data?.imageUrl}
+                        size={36}
+                      />
+                    </button>
                   }
                 />
 
@@ -174,12 +177,20 @@ export function Navbar({ user }: NavbarProps) {
                   <DropdownMenuSeparator />
 
                   {dashboardPath && (
-                    <DropdownMenuItem
-                      onClick={() => router.push(dashboardPath)}
-                    >
-                      <LayoutDashboard className="size-4" />
-                      Dashboard
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => router.push(dashboardPath)}
+                      >
+                        <LayoutDashboard className="size-4" />
+                        Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push(getProfilePath(user.data?.role))}
+                      >
+                        <User className="size-4" />
+                        My Profile
+                      </DropdownMenuItem>
+                    </>
                   )}
 
                   <DropdownMenuItem variant="destructive" onClick={handleLogout}>
@@ -189,12 +200,20 @@ export function Navbar({ user }: NavbarProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link
-                href="/login"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-              >
-                Login
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-md px-3 py-2 text-sm font-medium transition hover:bg-muted"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+                >
+                  Sign up
+                </Link>
+              </>
             )}
           </div>
         </div>

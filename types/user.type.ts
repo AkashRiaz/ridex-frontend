@@ -1,4 +1,4 @@
-import { AuthProvider, Role, UserStatus } from "./common.type";
+import { AuthProvider, Gender, Role, UserStatus } from "./common.type";
 
 export interface IUser {
   id: string;
@@ -11,7 +11,17 @@ export interface IUser {
   role: Role;
   status: UserStatus;
   needPasswordChange: boolean;
+  passwordChangedAt: string | null;
   imageUrl: string | null;
+  bio: string | null;
+  gender: Gender | null;
+  dateOfBirth: string | null;
+  division: string | null;
+  district: string | null;
+  area: string | null;
+  blockedReason: string | null;
+  blockedAt: string | null;
+  isDeleted: boolean;
   deletedAt: string | null;
   lastLoginAt: string | null;
   createdAt: string;
