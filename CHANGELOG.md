@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.4.0] — Phase 1 · Part 3: listings, search and detail (2026-11-20)
+
+### Added
+- **Search page `/listings`**:
+  - The filter sidebar (a sheet on mobile) covers vehicle type, brands with counts, price, year, mileage, condition, negotiable, division and district or "near me" with a radius, plus **dynamic spec filters rendered from the vehicle-type schema**.
+  - Sort options, a grid/list toggle, removable active-filter chips, pagination, and skeleton, empty and error states.
+  - Every filter lives in the URL, so searches are shareable.
+- **Listing detail `/listings/[slug]`**:
+  - Gallery with arrows, keyboard and swipe navigation, and thumbnails.
+  - Price and key facts, a specs table grouped like the schema, the description as plain text, and a video (YouTube embed, otherwise a link).
+  - Seller card, views, share/copy link, similar listings and breadcrumbs.
+  - Status notice for owners and staff, plus Open Graph metadata and noindex for unapproved listings.
+- **Listing wizard** (seller and dealer dashboards), 5 steps:
+  1. Vehicle: creates the draft and auto-fills specs.
+  2. Specs: dynamic fields; save a draft or continue.
+  3. Price & details: location selects and optional exact location.
+  4. Photos: multi-upload with progress, drag-and-drop or arrow reordering, set cover, delete, and a video link.
+  5. Review: checklist, then submit, resubmit or renew.
+  The step lives in the URL, so a draft can be resumed later.
+- **My listings**: status tabs with counts, cards showing status, rejection reason and views, and actions (edit/continue, submit, mark sold, renew, delete).
+- **Moderation** (super admin, admin, moderator): a queue with status tabs and counts (oldest first), and a review page with approve, reject or take down with a reason, and delete for admins.
+- **Buyers**: a "Start selling" card on the dashboard switches the account to seller and opens the wizard.
+- **Home**: hero search box, popular searches and the latest listings.
+- **Navbar**: a Browse link and a role-aware "Sell your bike" button.
+- **Shared code**:
+  - `ListingCard` (grid and list variants) with its skeleton.
+  - `ListingBits`: status badge, price tag, placeholder image and formatting helpers.
+  - `useUrlParams` hook and `lib/bdLocations.ts`.
+- **Data layer**: `searchActions` (cached for 60 seconds; "near me" searches are never cached) and `listingActions` (mutations call `updateTag("listings")`).
+
+### Changed
+- `baseApi` supports `auth: "optional"`, which sends the token only when signed in.
+- Role sidebars gain a Listings group for sellers and dealers, and Listings for moderation staff.
+
 ## [0.3.0] — Phase 1 · Part 2: vehicle catalog admin (2026-11-20)
 
 ### Added

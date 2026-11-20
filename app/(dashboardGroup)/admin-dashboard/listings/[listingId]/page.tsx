@@ -1,0 +1,11 @@
+import { ReviewListingPage } from "@/app/(dashboardGroup)/_components/Listing/ListingPages";
+
+export const metadata = {
+  title: "Review listing",
+};
+
+const Page = (props: PageProps<"/admin-dashboard/listings/[listingId]">) => {
+  return <ReviewListingPage params={props.params} dashboardPath="/admin-dashboard" />;
+};
+
+export default Page;

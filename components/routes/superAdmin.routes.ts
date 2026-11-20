@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Bike, Layers, LayoutDashboard, Tag, UserPlus, UserRound, Users } from "lucide-react";
+import { Bike, ClipboardCheck, Layers, LayoutDashboard, Tag, UserPlus, UserRound, Users } from "lucide-react";
 
 const prefix = "/super-admin-dashboard";
 
@@ -11,6 +11,11 @@ export const superAdminRoutes: ISidebarGroup[] = [
         label: "Overview",
         href: `${prefix}`,
         icon: LayoutDashboard,
+      },
+      {
+        label: "Listings",
+        href: `${prefix}/listings`,
+        icon: ClipboardCheck,
       },
       {
         label: "Users",

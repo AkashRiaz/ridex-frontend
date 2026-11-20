@@ -16,7 +16,8 @@ type BaseApiOptions = {
   body?: unknown;
   formData?: FormData;
   query?: Record<string, string | string[] | undefined>;
-  auth?: boolean;
+  // true: token required · "optional": send it when signed in · false: never
+  auth?: boolean | "optional";
   cache?: RequestCache;
   revalidate?: number;
   tags?: string[];
@@ -58,7 +59,11 @@ export const baseApi = async <T>(
   try {
     const headers: Record<string, string> = {};
 
-    if (auth) {
+    if (auth === "optional") {
+      const accessToken = await isAccessTokenExist();
+
+      if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+    } else if (auth) {
       const accessToken = await isAccessTokenExist();
 
       if (!accessToken) {

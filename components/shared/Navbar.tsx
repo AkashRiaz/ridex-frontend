@@ -38,7 +38,22 @@ const navItems = [
     label: "Home",
     href: "/",
   },
+  {
+    label: "Browse listings",
+    href: "/listings",
+  },
 ];
+
+/*
+ * "Sell" goes to the wizard for sellers/dealers, to the buyer upgrade card for
+ * buyers, and to sign-up for visitors.
+ */
+const getSellHref = (role: string | undefined) => {
+  if (role === "SELLER" || role === "DEALER") return `${getDashboardPath(role)}/create-listing`;
+  if (role === "BUYER") return "/buyer-dashboard";
+  if (role) return null;
+  return "/register";
+};
 
 export function Navbar({ user }: NavbarProps) {
   const router = useRouter();
@@ -46,6 +61,7 @@ export function Navbar({ user }: NavbarProps) {
 
   const isLoggedIn = Boolean(user?.success && user?.data);
   const dashboardPath = getDashboardPath(user?.data?.role);
+  const sellHref = getSellHref(isLoggedIn ? user?.data?.role : undefined);
 
   // Active Link Detection
   const isActiveMenu = (href: string) =>
@@ -140,8 +156,16 @@ export function Navbar({ user }: NavbarProps) {
             })}
           </div>
 
-          {/* Right: Theme + User */}
+          {/* Right: Sell + Theme + User */}
           <div className="flex items-center gap-2">
+            {sellHref && (
+              <Link
+                href={sellHref}
+                className="hidden rounded-md border border-primary px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10 sm:inline-flex"
+              >
+                Sell your bike
+              </Link>
+            )}
             <ThemeToggle />
 
             {isLoggedIn ? (

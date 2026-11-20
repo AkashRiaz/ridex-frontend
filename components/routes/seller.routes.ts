@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { LayoutDashboard, UserRound } from "lucide-react";
+import { ClipboardList, LayoutDashboard, PlusCircle, UserRound } from "lucide-react";
 
 const prefix = "/seller-dashboard";
 
@@ -11,6 +11,21 @@ export const sellerRoutes: ISidebarGroup[] = [
         label: "Overview",
         href: `${prefix}`,
         icon: LayoutDashboard,
+      },
+    ],
+  },
+  {
+    title: "Listings",
+    items: [
+      {
+        label: "My Listings",
+        href: `${prefix}/my-listings`,
+        icon: ClipboardList,
+      },
+      {
+        label: "Create Listing",
+        href: `${prefix}/create-listing`,
+        icon: PlusCircle,
       },
     ],
   },

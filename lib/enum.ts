@@ -1,4 +1,11 @@
-import { Gender, Role, UserStatus } from "@/types";
+import {
+  Gender,
+  Role,
+  TListingCondition,
+  TListingStatus,
+  TSearchSort,
+  UserStatus,
+} from "@/types";
 
 export enum GENDER {
   MALE = "MALE",
@@ -55,6 +62,41 @@ export const SELF_REGISTER_ROLES = [
 export const CREATABLE_ROLES: Partial<Record<Role, Role[]>> = {
   SUPER_ADMIN: ["ADMIN", "MODERATOR", "INSPECTOR", "DEALER", "SELLER", "BUYER"],
   ADMIN: ["MODERATOR", "INSPECTOR", "DEALER", "SELLER", "BUYER"],
+};
+
+export const LISTING_STATUS_LABEL: Record<TListingStatus, string> = {
+  DRAFT: "Draft",
+  PENDING: "Pending review",
+  APPROVED: "Live",
+  REJECTED: "Rejected",
+  SOLD: "Sold",
+  EXPIRED: "Expired",
+};
+
+export const LISTING_CONDITION_LABEL: Record<TListingCondition, string> = {
+  NEW: "Brand new",
+  USED: "Used",
+  RECONDITIONED: "Reconditioned",
+};
+
+export const SEARCH_SORT_LABEL: Record<TSearchSort, string> = {
+  relevance: "Best match",
+  newest: "Newest first",
+  price_asc: "Price: low to high",
+  price_desc: "Price: high to low",
+  year_desc: "Year: newest model",
+  mileage_asc: "Mileage: lowest",
+  nearest: "Nearest to me",
+};
+
+export const LISTING_LIMITS = {
+  titleMin: 10,
+  titleMax: 100,
+  descriptionMax: 5000,
+  priceMin: 1000,
+  priceMax: 100_000_000,
+  mileageMax: 1_000_000,
+  maxImages: 15,
 };
 
 // Bangladesh divisions for profile location

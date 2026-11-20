@@ -193,6 +193,30 @@ export const verifyMyPhoneAction = async (
   };
 };
 
+/*
+ * BUYER → SELLER. New tokens carry the new role, then go straight to the wizard.
+ */
+export const becomeSellerAction = async (): Promise<TActionState> => {
+  const result = await baseApi<TAuthResponseData>("/users/me/become-seller", {
+    method: "POST",
+  });
+
+  if (!result.success || !result.data) {
+    return {
+      success: false,
+      message: result.message,
+      statusCode: result.statusCode,
+    };
+  }
+
+  await setAuthCookies({
+    accessToken: result.data.accessToken,
+    refreshToken: result.data.refreshToken,
+  });
+
+  redirect("/seller-dashboard/create-listing");
+};
+
 export const deleteMyAccountAction = async (
   password: string,
 ): Promise<TActionState> => {
