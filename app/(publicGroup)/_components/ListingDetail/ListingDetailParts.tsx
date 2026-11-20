@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { BadgeCheck, CalendarDays, MapPin, ShieldCheck } from "lucide-react";
+import { ReportDialog } from "@/components/shared/ReportDialog";
+import { RatingInline, SellerBadges } from "@/components/shared/SellerBadges";
 import { formatSpecValue } from "@/components/dynamicForm/SpecValue";
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ROLE_LABEL } from "@/lib/enum";
@@ -50,9 +53,17 @@ export function ListingSpecsTable({
   );
 }
 
-export function SellerCard({ seller }: { seller: IListingSeller }) {
-  const isVerified = seller.emailVerified || seller.phoneVerified;
+export function SellerCard({
+  seller,
+  isSignedIn,
+  isOwner,
+}: {
+  seller: IListingSeller;
+  isSignedIn: boolean;
+  isOwner: boolean;
+}) {
   const location = [seller.district, seller.division].filter(Boolean).join(", ");
+  const isVerified = seller.badges.phoneVerified || seller.badges.idVerified || seller.badges.dealerVerified;
 
   return (
     <section className="rounded-2xl border bg-card p-5 shadow-card" aria-label="Seller">
@@ -60,14 +71,22 @@ export function SellerCard({ seller }: { seller: IListingSeller }) {
         <UserAvatar name={seller.name} imageUrl={seller.imageUrl} size={48} />
         <div className="min-w-0">
           <p className="flex items-center gap-1.5 truncate font-semibold">
-            {seller.name}
-            {isVerified && <BadgeCheck className="size-4 shrink-0 text-success" aria-label="Verified contact" />}
+            <Link href={`/sellers/${seller.id}`} className="truncate hover:underline">
+              {seller.name}
+            </Link>
+            {isVerified && <BadgeCheck className="size-4 shrink-0 text-success" aria-label="Verified seller" />}
           </p>
           <p className="text-sm text-muted-foreground">
             {seller.role === "DEALER" ? "Dealer" : ROLE_LABEL[seller.role] === "Seller" ? "Private seller" : ROLE_LABEL[seller.role]}
           </p>
         </div>
       </div>
+
+      <div className="mt-3">
+        <RatingInline average={seller.ratingAverage} count={seller.ratingCount} />
+      </div>
+
+      <SellerBadges badges={seller.badges} className="mt-3" />
 
       <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
         <li className="flex items-center gap-2">
@@ -80,11 +99,20 @@ export function SellerCard({ seller }: { seller: IListingSeller }) {
             {location}
           </li>
         )}
-        <li className="flex items-center gap-2">
-          <ShieldCheck className="size-4" aria-hidden="true" />
-          {seller.phoneVerified ? "Phone verified" : seller.emailVerified ? "Email verified" : "Not verified yet"}
-        </li>
+        {!isVerified && (
+          <li className="flex items-center gap-2">
+            <ShieldCheck className="size-4" aria-hidden="true" />
+            {seller.emailVerified ? "Email verified" : "Not verified yet"}
+          </li>
+        )}
       </ul>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+        <Link href={`/sellers/${seller.id}`} className="text-sm font-medium text-primary hover:underline">
+          View profile & reviews
+        </Link>
+        {!isOwner && <ReportDialog targetType="USER" targetId={seller.id} isSignedIn={isSignedIn} label="Report seller" />}
+      </div>
 
       <p className="mt-4 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
         Chat with the seller is coming soon. Meet in a safe public place and inspect the papers before paying.

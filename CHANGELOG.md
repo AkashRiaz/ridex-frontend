@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.5.0] — Phase 1 · Part 4: wishlist, reviews, reports, verification (2026-11-21)
+
+### Added
+- **Wishlist**:
+  - A heart button with optimistic updates on listing cards (home, search, similar listings, seller profile) and a Save button on listing detail.
+  - Signed-out visitors are sent to login and brought back.
+  - Saved IDs come from `service/getWishlistState.ts`.
+- **Dashboard pages** (buyer, seller, dealer, dealer staff, inspector):
+  - Saved (unavailable listings are dimmed) and Recently viewed (remove one or clear all).
+  - My reports, with the status of each report.
+- **Seller ratings**:
+  - "Rate this seller" on listing detail, shown only to eligible signed-in buyers.
+  - Viewers who already reviewed see their own review instead.
+  - Unverified accounts see a prompt to verify.
+  - Reviews page: Received, Awaiting reply (a one-time public reply) and Given (edit within 30 days, or delete). Buyers see Given only.
+- **Public seller profile `/sellers/[sellerId]`**:
+  - Badges, rating, bio, location, member since, active and sold counts, and listings.
+  - Reviews with a 1–5 distribution summary (plain CSS bars) and pagination.
+  - Report seller and report review.
+- **SellerCard** on listing detail: rating, verified badges and a profile link. Listing cards show the seller name, their strongest badge and their rating.
+- **ReportDialog**: reports a listing, seller or review. It offers reasons that fit the target, plus optional details (required for "Something else").
+- **Staff report queue** (moderator, admin, super admin):
+  - Tabs for open & in review, resolved, dismissed and all; a target filter; priority or newest sort; open-report counts per target.
+  - Detail page: a snapshot of the target, the reporter's details and other reports on the same target.
+  - Resolve panel: take down listing, hide review, block user (admins only), or dismiss, with a note.
+- **Verification**:
+  - Badge cards for phone, NID and dealership.
+  - ID and dealer forms with a document checklist, per-slot previews, rejection feedback and history.
+  - Photos are compressed in the browser before upload (`lib/compressImage.ts`).
+- **Admin verification queue**: status tabs with counts, a type filter, and search.
+  - Detail page: documents through short-lived signed links (plain `<img>` and PDF links, not next/image), the submitted details (only the last 4 NID digits) and the account.
+  - Approve, or reject with a reason.
+- **Dealer banner**: shown in the dashboard layout while a dealer account is PENDING, with a link to verification.
+- **Sidebars**:
+  - Buyer, seller, dealer, dealer staff and inspector get an Activity group.
+  - Buyer, seller and dealer also get Verification.
+  - Staff get Reports, and admins also get Verifications.
+- **Types** for seller, wishlist, review, report and verification; labels in `lib/enum.ts`; validations for review and verification.
+
+### Changed
+- `IListingCard.seller` is now always present (a public summary with badges and rating). `IListingSeller` gains a rating and badges.
+- `serverActions.bodySizeLimit` raised from 5mb to 20mb, because a verification upload sends every document in one request.
+
 ## [0.4.0] — Phase 1 · Part 3: listings, search and detail (2026-11-20)
 
 ### Added

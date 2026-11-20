@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
 import { siteConfig } from "@/lib/siteConfig";
+import { getWishlistState } from "@/service/getWishlistState";
 import { searchListingsAction } from "./_actions/searchActions";
 import { ListingSearchBox } from "./_components/Search/ListingSearchBox";
 
@@ -20,7 +21,10 @@ const POPULAR_SEARCHES = [
 ];
 
 const LatestListings = async () => {
-  const result = await searchListingsAction({ query: { limit: "8", sortBy: "newest" } });
+  const [result, wishlist] = await Promise.all([
+    searchListingsAction({ query: { limit: "8", sortBy: "newest" } }),
+    getWishlistState(),
+  ]);
   const listings = result.data ?? [];
 
   if (!result.success) {
@@ -35,7 +39,11 @@ const LatestListings = async () => {
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {listings.map((listing, index) => (
         <li key={listing.id}>
-          <ListingCard listing={listing} priority={index < 4} />
+          <ListingCard
+            listing={listing}
+            priority={index < 4}
+            wishlist={{ saved: wishlist.savedIds.includes(listing.id), isSignedIn: wishlist.isSignedIn }}
+          />
         </li>
       ))}
     </ul>

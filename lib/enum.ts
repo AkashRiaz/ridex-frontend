@@ -1,6 +1,13 @@
 import {
   Gender,
   Role,
+  TDocumentKind,
+  TReportAction,
+  TReportReason,
+  TReportStatus,
+  TReportTargetType,
+  TVerificationStatus,
+  TVerificationType,
   TListingCondition,
   TListingStatus,
   TSearchSort,
@@ -110,3 +117,72 @@ export const BD_DIVISIONS = [
   "Rangpur",
   "Sylhet",
 ] as const;
+
+// ============================================
+// Reports
+// ============================================
+
+export const REPORT_REASON_LABEL: Record<TReportReason, string> = {
+  SCAM: "Scam or fraud",
+  FAKE_LISTING: "Fake listing",
+  WRONG_INFO: "Wrong information",
+  DUPLICATE: "Duplicate listing",
+  ALREADY_SOLD: "Already sold",
+  OFFENSIVE: "Offensive content",
+  HARASSMENT: "Harassment",
+  SPAM: "Spam",
+  OTHER: "Something else",
+};
+
+// reasons that make sense for each target
+export const REPORT_REASONS_BY_TARGET: Record<TReportTargetType, TReportReason[]> = {
+  LISTING: ["SCAM", "FAKE_LISTING", "WRONG_INFO", "DUPLICATE", "ALREADY_SOLD", "OFFENSIVE", "OTHER"],
+  USER: ["SCAM", "HARASSMENT", "SPAM", "OFFENSIVE", "OTHER"],
+  REVIEW: ["OFFENSIVE", "HARASSMENT", "SPAM", "FAKE_LISTING", "OTHER"],
+  MESSAGE: ["SCAM", "HARASSMENT", "SPAM", "OFFENSIVE", "OTHER"],
+};
+
+export const REPORT_TARGET_LABEL: Record<TReportTargetType, string> = {
+  LISTING: "Listing",
+  USER: "User",
+  REVIEW: "Review",
+  MESSAGE: "Message",
+};
+
+export const REPORT_STATUS_LABEL: Record<TReportStatus, string> = {
+  OPEN: "Open",
+  IN_REVIEW: "In review",
+  RESOLVED: "Resolved",
+  DISMISSED: "Dismissed",
+};
+
+export const REPORT_ACTION_LABEL: Record<TReportAction, string> = {
+  NONE: "No action",
+  TAKE_DOWN_LISTING: "Take down listing",
+  BLOCK_USER: "Block user",
+  HIDE_REVIEW: "Hide review",
+};
+
+// ============================================
+// Verification
+// ============================================
+
+export const VERIFICATION_TYPE_LABEL: Record<TVerificationType, string> = {
+  ID: "ID verification",
+  DEALER: "Dealer verification",
+};
+
+export const VERIFICATION_STATUS_LABEL: Record<TVerificationStatus, string> = {
+  PENDING: "Pending review",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+};
+
+export const DOCUMENT_KIND_LABEL: Record<TDocumentKind, string> = {
+  NID_FRONT: "NID front",
+  NID_BACK: "NID back",
+  SELFIE: "Selfie holding your NID",
+  TRADE_LICENSE: "Trade license",
+  TIN_CERTIFICATE: "TIN certificate",
+  SHOWROOM_PHOTO: "Showroom photo",
+};

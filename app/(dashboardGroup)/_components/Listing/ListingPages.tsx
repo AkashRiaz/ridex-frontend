@@ -102,6 +102,7 @@ const MyListingsGrid = async ({
               <ListingCard
                 listing={listing}
                 showStatus
+                showSeller={false}
                 href={listing.status === "APPROVED" || listing.status === "SOLD" ? `/listings/${listing.slug}` : `${dashboardPath}/my-listings/${listing.id}/edit`}
               />
               {listing.status === "REJECTED" && listing.rejectionReason && (

@@ -3,6 +3,7 @@ import { SearchX } from "lucide-react";
 import { CustomPagination } from "@/components/ui/CustomPagination";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
 import { cn } from "@/lib/utils";
+import { getWishlistState } from "@/service/getWishlistState";
 import { TSearchParams } from "@/types";
 import { searchListingsAction } from "../../_actions/searchActions";
 
@@ -15,7 +16,7 @@ const gridClassName = (view: View) =>
   );
 
 const SearchResults = async ({ searchParams, view }: { searchParams: TSearchParams; view: View }) => {
-  const result = await searchListingsAction({ query: searchParams });
+  const [result, wishlist] = await Promise.all([searchListingsAction({ query: searchParams }), getWishlistState()]);
 
   if (!result.success) {
     return (
@@ -55,7 +56,12 @@ const SearchResults = async ({ searchParams, view }: { searchParams: TSearchPara
       <ul className={gridClassName(view)}>
         {listings.map((listing, index) => (
           <li key={listing.id}>
-            <ListingCard listing={listing} variant={view} priority={index < 3} />
+            <ListingCard
+              listing={listing}
+              variant={view}
+              priority={index < 3}
+              wishlist={{ saved: wishlist.savedIds.includes(listing.id), isSignedIn: wishlist.isSignedIn }}
+            />
           </li>
         ))}
       </ul>

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AlertTriangle, Calendar, Eye, Gauge, MapPin, Palette, Pencil, Sparkles } from "lucide-react";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
+import { WishlistButton } from "@/components/listing/WishlistButton";
+import { ReportDialog } from "@/components/shared/ReportDialog";
 import {
   ListingStatusBadge,
   PriceTag,
@@ -15,6 +17,7 @@ import { LISTING_CONDITION_LABEL } from "@/lib/enum";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { siteConfig } from "@/lib/siteConfig";
 import { getMe } from "@/service/getMe";
+import { getWishlistState } from "@/service/getWishlistState";
 import { getListingBySlugAction, getSimilarListingsAction } from "../../_actions/searchActions";
 import { ListingGallery } from "../../_components/ListingDetail/ListingGallery";
 import {
@@ -23,6 +26,7 @@ import {
   SellerCard,
   getStatusNotice,
 } from "../../_components/ListingDetail/ListingDetailParts";
+import { RateSeller } from "../../_components/ListingDetail/RateSeller";
 import { ShareButton } from "../../_components/ListingDetail/ShareButton";
 
 type ListingDetailPageProps = {
@@ -59,7 +63,7 @@ export const generateMetadata = async ({ params }: ListingDetailPageProps): Prom
 };
 
 const SimilarListings = async ({ slug }: { slug: string }) => {
-  const result = await getSimilarListingsAction(slug);
+  const [result, wishlist] = await Promise.all([getSimilarListingsAction(slug), getWishlistState()]);
   const listings = result.data ?? [];
 
   if (listings.length === 0) return null;
@@ -72,7 +76,10 @@ const SimilarListings = async ({ slug }: { slug: string }) => {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {listings.slice(0, 4).map((listing) => (
           <li key={listing.id}>
-            <ListingCard listing={listing} />
+            <ListingCard
+              listing={listing}
+              wishlist={{ saved: wishlist.savedIds.includes(listing.id), isSignedIn: wishlist.isSignedIn }}
+            />
           </li>
         ))}
       </ul>
@@ -82,7 +89,7 @@ const SimilarListings = async ({ slug }: { slug: string }) => {
 
 const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
   const { slug } = await params;
-  const [result, me] = await Promise.all([getListingBySlugAction(slug), getMe()]);
+  const [result, me, wishlist] = await Promise.all([getListingBySlugAction(slug), getMe(), getWishlistState()]);
 
   if (!result.success || !result.data) notFound();
 
@@ -90,6 +97,8 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
   const statusNotice = getStatusNotice(listing);
   const canEdit = listing.isOwner && listing.status !== "SOLD";
   const ownerDashboard = getDashboardPath(me.data?.role);
+  const isSignedIn = Boolean(me.success && me.data);
+  const isLive = listing.status === "APPROVED";
 
   const facts = [
     { icon: Calendar, label: "Model year", value: String(listing.year) },
@@ -173,6 +182,12 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
             </h2>
             <ListingSpecsTable attributes={listing.vehicleType.attributes} specs={listing.specs} />
           </section>
+
+          {isSignedIn && me.data && !listing.isOwner && (isLive || listing.status === "SOLD") && (
+            <Suspense fallback={null}>
+              <RateSeller listingId={listing.id} sellerName={listing.seller.name} viewerRole={me.data.role} />
+            </Suspense>
+          )}
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
@@ -212,6 +227,14 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
             </div>
 
             <div className="flex flex-wrap gap-2">
+              {isLive && !listing.isOwner && (
+                <WishlistButton
+                  listingId={listing.id}
+                  saved={wishlist.savedIds.includes(listing.id)}
+                  isSignedIn={isSignedIn}
+                  variant="button"
+                />
+              )}
               <ShareButton title={listing.title} path={`/listings/${listing.slug}`} />
               {canEdit && ownerDashboard && (
                 <Link
@@ -225,7 +248,13 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
             </div>
           </section>
 
-          <SellerCard seller={listing.seller} />
+          <SellerCard seller={listing.seller} isSignedIn={isSignedIn} isOwner={Boolean(listing.isOwner)} />
+
+          {!listing.isOwner && (isLive || listing.status === "SOLD") && (
+            <div className="flex justify-center">
+              <ReportDialog targetType="LISTING" targetId={listing.id} isSignedIn={isSignedIn} label="Report this listing" />
+            </div>
+          )}
         </aside>
       </div>
 

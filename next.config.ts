@@ -3,7 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: "5mb",
+      // verification uploads send all documents at once (photos are compressed in the browser)
+      bodySizeLimit: "20mb",
     },
   },
   images: {

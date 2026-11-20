@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Camera, Gauge, MapPin } from "lucide-react";
+import { Calendar, Camera, Gauge, MapPin, Star } from "lucide-react";
+import { TopSellerBadge } from "@/components/shared/SellerBadges";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LISTING_CONDITION_LABEL } from "@/lib/enum";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ import {
   formatMileage,
   formatRelativeDate,
 } from "./ListingBits";
+import { WishlistButton } from "./WishlistButton";
 
 type ListingCardProps = {
   listing: IListingCard;
@@ -20,6 +22,10 @@ type ListingCardProps = {
   href?: string;
   showStatus?: boolean;
   priority?: boolean;
+  // heart button; omit to hide it (dashboards)
+  wishlist?: { saved: boolean; isSignedIn: boolean };
+  // hide the seller line on the seller's own pages
+  showSeller?: boolean;
 };
 
 /*
@@ -31,6 +37,8 @@ export function ListingCard({
   href,
   showStatus = false,
   priority = false,
+  wishlist,
+  showSeller = true,
 }: ListingCardProps) {
   const isList = variant === "list";
   const location = [listing.area, listing.district].filter(Boolean).join(", ");
@@ -71,6 +79,12 @@ export function ListingCard({
           {showStatus && <ListingStatusBadge status={listing.status} />}
         </div>
 
+        {wishlist && (
+          <div className="absolute right-3 top-3">
+            <WishlistButton listingId={listing.id} saved={wishlist.saved} isSignedIn={wishlist.isSignedIn} />
+          </div>
+        )}
+
         {listing.imageCount > 1 && (
           <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-xs text-white">
             <Camera className="size-3" aria-hidden="true" />
@@ -97,6 +111,19 @@ export function ListingCard({
         </div>
 
         <PriceTag price={listing.price} isNegotiable={listing.isNegotiable} />
+
+        {showSeller && listing.seller && (
+          <p className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+            <span className="truncate">{listing.seller.name}</span>
+            <TopSellerBadge badges={listing.seller.badges} />
+            {listing.seller.ratingCount > 0 && (
+              <span className="inline-flex shrink-0 items-center gap-0.5">
+                <Star className="size-3 fill-warning text-warning" aria-hidden="true" />
+                {listing.seller.ratingAverage.toFixed(1)}
+              </span>
+            )}
+          </p>
+        )}
 
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
           <li className="inline-flex items-center gap-1.5">

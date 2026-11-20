@@ -5,3 +5,8 @@ export * from "./vehicle-type.type";
 export * from "./brand.type";
 export * from "./vehicle-model.type";
 export * from "./listing.type";
+export * from "./seller.type";
+export * from "./wishlist.type";
+export * from "./review.type";
+export * from "./report.type";
+export * from "./verification.type";

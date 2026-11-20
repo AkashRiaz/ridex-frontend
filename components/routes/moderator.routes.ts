@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { ClipboardCheck, LayoutDashboard, UserRound, Users } from "lucide-react";
+import { ClipboardCheck, Flag, LayoutDashboard, UserRound, Users } from "lucide-react";
 
 const prefix = "/moderator-dashboard";
 
@@ -16,6 +16,11 @@ export const moderatorRoutes: ISidebarGroup[] = [
         label: "Listings",
         href: `${prefix}/listings`,
         icon: ClipboardCheck,
+      },
+      {
+        label: "Reports",
+        href: `${prefix}/reports`,
+        icon: Flag,
       },
       {
         label: "Users",

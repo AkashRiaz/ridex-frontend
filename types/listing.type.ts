@@ -1,5 +1,6 @@
 import { IBrandSummary } from "./brand.type";
 import { Role } from "./common.type";
+import type { ISellerBadges, ISellerSummary } from "./seller.type";
 import { IVehicleAttribute, IVehicleTypeSummary, TSpecs } from "./vehicle-type.type";
 
 export type TListingStatus = "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SOLD" | "EXPIRED";
@@ -47,8 +48,8 @@ export type IListingCard = {
   createdAt: string;
   updatedAt: string;
   distanceKm: number | null;
-  // manage endpoint only
-  seller?: { id: string; name: string; email: string | null; role: Role };
+  // email only on the manage endpoint
+  seller: ISellerSummary & { email?: string | null };
 };
 
 export type IListingImage = {
@@ -68,6 +69,9 @@ export type IListingSeller = {
   division: string | null;
   district: string | null;
   createdAt: string;
+  ratingAverage: number;
+  ratingCount: number;
+  badges: ISellerBadges;
 };
 
 export type IListingDetail = {

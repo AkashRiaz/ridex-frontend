@@ -6,6 +6,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardMainContent from "@/components/dashboard/DashboardMainContent";
+import DealerVerificationBanner from "@/components/dashboard/DealerVerificationBanner";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { getMe } from "@/service/getMe";
 
@@ -34,6 +35,8 @@ const DashboardGroupLayout = async ({
 
               <ThemeToggle />
             </div>
+
+            <DealerVerificationBanner user={user.data} />
 
             <DashboardMainContent>{children}</DashboardMainContent>
           </SidebarInset>
