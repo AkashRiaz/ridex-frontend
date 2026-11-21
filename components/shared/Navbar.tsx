@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -28,48 +29,40 @@ import { logout } from "@/app/(authGroup)/_actions/authActions";
 import { Bike, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import { NavbarProps } from "@/lib/type";
 import { getDashboardPath, getProfilePath } from "@/lib/dashboardPath";
+import { PUBLIC_NAV_ITEMS, getSellHref, isActiveNavHref } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 import { UserAvatar } from "./UserAvatar";
 import { siteConfig } from "@/lib/siteConfig";
 import { ThemeToggle } from "./ThemeToggle";
 import { ChatInboxLink } from "./ChatInboxLink";
 import { NotificationBell } from "./NotificationBell";
 
-// Public navigation links (pages are added phase by phase)
-const navItems = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Browse listings",
-    href: "/listings",
-  },
-];
+const navItems = PUBLIC_NAV_ITEMS;
 
-/*
- * "Sell" goes to the wizard for sellers/dealers, to the buyer upgrade card for
- * buyers, and to sign-up for visitors.
- */
-const getSellHref = (role: string | undefined) => {
-  if (role === "SELLER" || role === "DEALER") return `${getDashboardPath(role)}/create-listing`;
-  if (role === "BUYER") return "/buyer-dashboard";
-  if (role) return null;
-  return "/register";
-};
+// px scrolled before the homepage navbar turns solid
+const SOLID_AFTER_PX = 24;
 
 export function Navbar({ user }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
 
   const isLoggedIn = Boolean(user?.success && user?.data);
   const dashboardPath = getDashboardPath(user?.data?.role);
   const sellHref = getSellHref(isLoggedIn ? user?.data?.role : undefined);
 
-  // Active Link Detection
-  const isActiveMenu = (href: string) =>
-    href === "/"
-      ? pathname === "/"
-      : pathname === href || pathname.startsWith(`${href}/`);
+  // see-through over the homepage hero, solid (frosted) everywhere else
+  const overHero = pathname === "/" && !scrolled;
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > SOLID_AFTER_PX);
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isActiveMenu = (href: string) => isActiveNavHref(pathname, href);
 
   const handleLogout = async () => {
     await logout();
@@ -81,7 +74,12 @@ export function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300",
+        overHero ? "border-transparent bg-transparent" : "glass shadow-sm",
+      )}
+    >
       <nav aria-label="Main Navigation">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           {/* Mobile Menu Button & Logo */}

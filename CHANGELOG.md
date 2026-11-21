@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.9.0] — Phase 1 review: conventions (2026-11-21)
+
+### Changed
+- **Validation:** the phone-login and verify-phone form schemas moved into `components/validations/auth.validation.ts` (`PhoneOtpCodeZodSchema`, `VerifyPhoneFormZodSchema`).
+- **Catalog components (CONVENTIONS §B6):** `BrandCreate`, `BrandUpdate`, `BrandDelete` and `BrandLoadingTable`, plus the same four for VehicleType and VehicleModel. They wrap the shared `<Entity>Form`, `CatalogDelete` and `CatalogLoadingTable`; behaviour is unchanged.
+- **Queue tables:** moved out of the `*Pages.tsx` files into `ListingTable`, `ReportTable`, `MyReportTable` and `VerificationTable`, each with a table-shaped `…LoadingTable` skeleton instead of a plain block. Shared badges moved to `ReportBits.tsx` and `VerificationBits.tsx`.
+
+## [0.8.0] — Phase 1 · Part 7: public homepage + main layout (2026-11-21)
+
+### Added
+- **Homepage** (`app/(publicGroup)/page.tsx` + `_components/HomePage/`):
+  - `hero/Hero` + `hero/HeroBackdrop`: headline, search, popular searches and safety points. The background moves slower than the page (parallax) with glows, a road grid and speed lines. An optional looping ride video (`NEXT_PUBLIC_HERO_VIDEO_URL`, `NEXT_PUBLIC_HERO_POSTER_URL`) loads only on screens 768px and wider, and never with reduced motion.
+  - `StatsSection`: live listings, verified sellers, districts and bikes sold in the last 30 days, counting up as they scroll into view.
+  - `FeaturedListings` + `FeaturedCarousel`: a swipeable scroll-snap row with arrow buttons on desktop and wishlist hearts.
+  - `BrowseByCategory`: tiles with an icon and live count for each bike category, linking to the filtered search.
+  - `BrowseByBrand`: logo (or monogram) cards with counts, linking to `/listings?brand=…`.
+  - `HowItWorks`: buying and selling steps in keyboard-accessible tabs.
+  - `LatestListings` (moved out of `page.tsx`), `TrustSection` and a role-aware `SellCTA` (visitor, buyer, seller or dealer; hidden for staff).
+  - One `/search/home` request (`_actions/homeActions.ts`, revalidated every 60s) feeds stats, featured, categories and brands. Each section streams in behind its own skeleton (`HomeLoading.tsx`) and shows its own error or empty message.
+- **Main layout**:
+  - `MobileBottomNav`: Home, Search, a raised Sell button, Chats with the live unread badge, and Account or Log in. Shown below `lg`, with iPhone safe-area padding; the page gets matching bottom padding.
+  - `(publicGroup)/template.tsx`: a fade-and-rise page transition between public pages.
+  - `(publicGroup)/loading.tsx`: a skeleton page inside the real navbar and footer.
+  - A "Skip to content" link.
+- **Motion helpers** (`components/motion/`): `Reveal`, `Stagger`/`StaggerItem` and `CountUp`. All render in place with `prefers-reduced-motion`.
+- **Design tokens** (`globals.css`): hero glows, a glass surface, motion durations, the bottom-nav height, `marquee`/`speed-line`/`float` animations, and `glass`, `pb-bottom-nav` and `no-scrollbar` utilities, each defined for light and dark.
+- `lib/navigation.ts`: public nav items, `getSellHref` and active-link matching, shared by the navbar, bottom nav and footer.
+- `types/home.type.ts`.
+
+### Changed
+- `Navbar`: see-through over the homepage hero, frosted once you scroll and on every other page. New Categories and Brands links.
+- `Footer`: Explore, Categories and Buy & sell columns, plus the support email. Social links show only once real URLs are set in `siteConfig.social`.
+- `siteConfig`: `heroVideoUrl`, `heroPosterUrl`.
+
 ## [0.7.0] — Phase 1 · Part 6: role dashboards + audit log (2026-11-21)
 
 ### Added

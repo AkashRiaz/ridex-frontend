@@ -17,7 +17,7 @@ import { ACTIVE_FILTER_OPTIONS, UrlFilterSelect } from "@/components/shared/UrlF
 import { TSearchParams } from "@/types";
 import { getAllBrandsAction } from "../../_actions/brandActions";
 import { getAllVehicleTypesAction } from "../../_actions/vehicleTypeActions";
-import CatalogDelete from "../Catalog/CatalogDelete";
+import BrandDelete from "./BrandDelete";
 import { CatalogError } from "../Catalog/CatalogStates";
 import { CatalogThumb } from "../Catalog/CatalogThumb";
 
@@ -170,7 +170,7 @@ const BrandTable = async ({
                         <Pencil className="size-3.5" aria-hidden="true" />
                         Edit
                       </Link>
-                      <CatalogDelete entity="brand" id={brand.id} name={brand.name} />
+                      <BrandDelete id={brand.id} name={brand.name} />
                     </div>
                   </TableCell>
                 </TableRow>

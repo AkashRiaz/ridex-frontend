@@ -56,6 +56,12 @@
   --shadow-card: var(--shadow-card);
   --shadow-elevated: var(--shadow-elevated);
   --ease-smooth: var(--ease-smooth);
+  --color-hero-glow-1: var(--hero-glow-1);
+  --color-hero-glow-2: var(--hero-glow-2);
+  --color-glass: var(--glass);
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-speed-line: speed-line 3.2s var(--ease-smooth) infinite;
+  --animate-float: float 6s ease-in-out infinite;
 }
 
 :root {
@@ -88,6 +94,16 @@
   --shadow-card: 0 1px 2px oklch(0 0 0 / 0.04), 0 4px 16px oklch(0 0 0 / 0.06);
   --shadow-elevated: 0 8px 32px oklch(0 0 0 / 0.12);
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  /* motion durations (seconds) used by components/motion */
+  --duration-fast: 0.18;
+  --duration-base: 0.45;
+  --duration-slow: 0.8;
+  /* homepage hero + glass surfaces */
+  --hero-glow-1: oklch(0.72 0.17 48 / 0.35);
+  --hero-glow-2: oklch(0.62 0.13 230 / 0.22);
+  --glass: oklch(0.99 0.003 75 / 0.72);
+  /* mobile bottom navigation */
+  --bottom-nav-height: 4rem;
   --sidebar: oklch(0.98 0.004 75);
   --sidebar-foreground: oklch(0.18 0.012 60);
   --sidebar-primary: oklch(0.64 0.2 42);
@@ -126,6 +142,9 @@
   --chart-5: oklch(0.8 0.15 80);
   --shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 4px 16px oklch(0 0 0 / 0.35);
   --shadow-elevated: 0 8px 32px oklch(0 0 0 / 0.5);
+  --hero-glow-1: oklch(0.7 0.18 48 / 0.32);
+  --hero-glow-2: oklch(0.55 0.14 250 / 0.3);
+  --glass: oklch(0.16 0.008 60 / 0.7);
   --sidebar: oklch(0.19 0.009 60);
   --sidebar-foreground: oklch(0.96 0.006 75);
   --sidebar-primary: oklch(0.72 0.18 48);
@@ -157,6 +176,63 @@
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* ============================================
+ * Homepage motion + layout helpers
+ * ============================================ */
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes speed-line {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(220%);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* frosted surface for the navbar, bottom nav and hero chips */
+@utility glass {
+  background-color: var(--glass);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+}
+
+/* room for the mobile bottom nav (plus the iPhone home indicator) */
+@utility pb-bottom-nav {
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+}
+
+/* horizontal scroll rows without a visible scrollbar */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 

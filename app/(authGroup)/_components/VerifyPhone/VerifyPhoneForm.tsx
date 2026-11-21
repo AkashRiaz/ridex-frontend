@@ -4,23 +4,17 @@ import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "@tanstack/react-form";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import z from "zod";
 import { Button } from "@/components/ui/button";
 import { FieldErrorText } from "@/components/ui/FieldErrorText";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneZodSchema } from "@/components/validations/auth.validation";
+import { VerifyPhoneFormZodSchema } from "@/components/validations/auth.validation";
 import {
   sendPhoneOtpAction,
   verifyPhoneOtpAction,
 } from "../../_actions/authActions";
 import OtpInput from "../shared/OtpInput";
 import ResendCodeButton from "../shared/ResendCodeButton";
-
-const VerifyPhoneFormZodSchema = z.object({
-  phone: PhoneZodSchema,
-  otp: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
-});
 
 const VerifyPhoneForm = ({ phone }: { phone?: string }) => {
   const [state, formAction] = useActionState(verifyPhoneOtpAction, null);

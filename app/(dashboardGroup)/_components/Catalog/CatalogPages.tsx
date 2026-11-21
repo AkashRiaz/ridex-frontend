@@ -8,15 +8,23 @@ import {
   getAllVehicleTypesAction,
   getVehicleTypeByIdAction,
 } from "../../_actions/vehicleTypeActions";
-import BrandForm from "../Brand/BrandForm";
-import BrandTable, { BRAND_COLUMNS } from "../Brand/BrandTable";
+import BrandCreate from "../Brand/BrandCreate";
+import BrandDelete from "../Brand/BrandDelete";
+import BrandLoadingTable from "../Brand/BrandLoadingTable";
+import BrandTable from "../Brand/BrandTable";
+import BrandUpdate from "../Brand/BrandUpdate";
 import AttributeSchemaBuilder from "../VehicleType/AttributeSchemaBuilder";
-import VehicleTypeForm from "../VehicleType/VehicleTypeForm";
-import VehicleTypeTable, { VEHICLE_TYPE_COLUMNS } from "../VehicleType/VehicleTypeTable";
-import VehicleModelForm from "../VehicleModel/VehicleModelForm";
-import VehicleModelTable, { VEHICLE_MODEL_COLUMNS } from "../VehicleModel/VehicleModelTable";
-import CatalogDelete from "./CatalogDelete";
-import { CatalogError, CatalogLoadingTable } from "./CatalogStates";
+import VehicleTypeCreate from "../VehicleType/VehicleTypeCreate";
+import VehicleTypeDelete from "../VehicleType/VehicleTypeDelete";
+import VehicleTypeLoadingTable from "../VehicleType/VehicleTypeLoadingTable";
+import VehicleTypeTable from "../VehicleType/VehicleTypeTable";
+import VehicleTypeUpdate from "../VehicleType/VehicleTypeUpdate";
+import VehicleModelCreate from "../VehicleModel/VehicleModelCreate";
+import VehicleModelDelete from "../VehicleModel/VehicleModelDelete";
+import VehicleModelLoadingTable from "../VehicleModel/VehicleModelLoadingTable";
+import VehicleModelTable from "../VehicleModel/VehicleModelTable";
+import VehicleModelUpdate from "../VehicleModel/VehicleModelUpdate";
+import { CatalogError } from "./CatalogStates";
 
 /*
  * Shared page bodies for the catalog pages of the super-admin and admin dashboards.
@@ -42,7 +50,7 @@ const FormSkeleton = () => (
 export const VehicleTypesListPage = async ({ searchParams, dashboardPath }: ListPageProps) => (
   <div className="flex flex-col gap-4 p-2 md:p-5">
     <Suspense
-      fallback={<CatalogLoadingTable title="Vehicle Types" columns={VEHICLE_TYPE_COLUMNS} rows={4} />}
+      fallback={<VehicleTypeLoadingTable />}
     >
       <VehicleTypeTable searchParams={await searchParams} dashboardPath={dashboardPath} />
     </Suspense>
@@ -51,7 +59,7 @@ export const VehicleTypesListPage = async ({ searchParams, dashboardPath }: List
 
 export const CreateVehicleTypePage = ({ dashboardPath }: { dashboardPath: string }) => (
   <div className="mx-auto max-w-3xl p-2 md:p-5">
-    <VehicleTypeForm dashboardPath={dashboardPath} />
+    <VehicleTypeCreate dashboardPath={dashboardPath} />
   </div>
 );
 
@@ -77,8 +85,7 @@ const VehicleTypeEditor = async ({
           <TableBackButton />
           {vehicleType.name}
         </h2>
-        <CatalogDelete
-          entity="vehicleType"
+        <VehicleTypeDelete
           id={vehicleType.id}
           name={vehicleType.name}
           showLabel
@@ -86,7 +93,7 @@ const VehicleTypeEditor = async ({
         />
       </div>
 
-      <VehicleTypeForm
+      <VehicleTypeUpdate
         key={`details-${vehicleType.updatedAt}`}
         vehicleType={vehicleType}
         dashboardPath={dashboardPath}
@@ -130,7 +137,7 @@ export const VehicleTypeDetailPage = async ({
 
 export const BrandsListPage = async ({ searchParams, dashboardPath }: ListPageProps) => (
   <div className="flex flex-col gap-4 p-2 md:p-5">
-    <Suspense fallback={<CatalogLoadingTable title="Brands" columns={BRAND_COLUMNS} />}>
+    <Suspense fallback={<BrandLoadingTable />}>
       <BrandTable searchParams={await searchParams} dashboardPath={dashboardPath} />
     </Suspense>
   </div>
@@ -166,21 +173,19 @@ const BrandEditor = async ({
             <TableBackButton />
             {brand.name}
           </h2>
-          <CatalogDelete
-            entity="brand"
-            id={brand.id}
-            name={brand.name}
-            showLabel
-            redirectTo={`${dashboardPath}/brands`}
-          />
+          <BrandDelete id={brand.id} name={brand.name} showLabel redirectTo={`${dashboardPath}/brands`} />
         </div>
       )}
-      <BrandForm
-        key={brand?.updatedAt ?? "new"}
-        brand={brand}
-        vehicleTypes={vehicleTypesResult.data ?? []}
-        dashboardPath={dashboardPath}
-      />
+      {brand ? (
+        <BrandUpdate
+          key={brand.updatedAt}
+          brand={brand}
+          vehicleTypes={vehicleTypesResult.data ?? []}
+          dashboardPath={dashboardPath}
+        />
+      ) : (
+        <BrandCreate vehicleTypes={vehicleTypesResult.data ?? []} dashboardPath={dashboardPath} />
+      )}
     </div>
   );
 };
@@ -217,7 +222,7 @@ export const BrandDetailPage = async ({
 
 export const VehicleModelsListPage = async ({ searchParams, dashboardPath }: ListPageProps) => (
   <div className="flex flex-col gap-4 p-2 md:p-5">
-    <Suspense fallback={<CatalogLoadingTable title="Models" columns={VEHICLE_MODEL_COLUMNS} />}>
+    <Suspense fallback={<VehicleModelLoadingTable />}>
       <VehicleModelTable searchParams={await searchParams} dashboardPath={dashboardPath} />
     </Suspense>
   </div>
@@ -259,8 +264,7 @@ const VehicleModelEditor = async ({
             <TableBackButton />
             {vehicleModel.brand.name} {vehicleModel.name}
           </h2>
-          <CatalogDelete
-            entity="vehicleModel"
+          <VehicleModelDelete
             id={vehicleModel.id}
             name={`${vehicleModel.brand.name} ${vehicleModel.name}`}
             showLabel
@@ -268,13 +272,21 @@ const VehicleModelEditor = async ({
           />
         </div>
       )}
-      <VehicleModelForm
-        key={vehicleModel?.updatedAt ?? "new"}
-        vehicleModel={vehicleModel}
-        vehicleTypes={vehicleTypesResult.data ?? []}
-        brands={brandsResult.data ?? []}
-        dashboardPath={dashboardPath}
-      />
+      {vehicleModel ? (
+        <VehicleModelUpdate
+          key={vehicleModel.updatedAt}
+          vehicleModel={vehicleModel}
+          vehicleTypes={vehicleTypesResult.data ?? []}
+          brands={brandsResult.data ?? []}
+          dashboardPath={dashboardPath}
+        />
+      ) : (
+        <VehicleModelCreate
+          vehicleTypes={vehicleTypesResult.data ?? []}
+          brands={brandsResult.data ?? []}
+          dashboardPath={dashboardPath}
+        />
+      )}
     </div>
   );
 };

@@ -8,18 +8,16 @@ import { Button } from "@/components/ui/button";
 import { FieldErrorText } from "@/components/ui/FieldErrorText";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneOtpRequestZodSchema } from "@/components/validations/auth.validation";
-import z from "zod";
+import {
+  PhoneOtpCodeZodSchema,
+  PhoneOtpRequestZodSchema,
+} from "@/components/validations/auth.validation";
 import {
   sendPhoneOtpAction,
   verifyPhoneOtpAction,
 } from "../../_actions/authActions";
 import OtpInput from "../shared/OtpInput";
 import ResendCodeButton from "../shared/ResendCodeButton";
-
-const OtpStepZodSchema = z.object({
-  otp: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
-});
 
 /*
  * Two steps: phone → code. Only for accounts with a verified phone.
@@ -56,7 +54,7 @@ const PhoneOtpLoginForm = ({ redirectTo }: { redirectTo?: string }) => {
 
   const otpForm = useForm({
     defaultValues: { otp: "" },
-    validators: { onSubmit: OtpStepZodSchema },
+    validators: { onSubmit: PhoneOtpCodeZodSchema },
     onSubmit: async ({ value }) => {
       const formData = new FormData();
       formData.append("phone", phone ?? "");

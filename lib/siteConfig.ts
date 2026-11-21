@@ -17,6 +17,9 @@ export const siteConfig = {
   locales: ["en", "bn"] as const,
   defaultLocale: "en" as const,
   supportEmail: "support@ridex.demo",
+  // optional looping ride video behind the homepage hero (desktop only, never with reduced motion)
+  heroVideoUrl: process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "",
+  heroPosterUrl: process.env.NEXT_PUBLIC_HERO_POSTER_URL || "",
   social: {
     facebook: "#",
     instagram: "#",

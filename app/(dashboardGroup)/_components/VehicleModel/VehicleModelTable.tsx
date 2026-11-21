@@ -19,7 +19,7 @@ import { IVehicleAttribute, TSearchParams } from "@/types";
 import { getAllBrandsAction } from "../../_actions/brandActions";
 import { getAllVehicleModelsAction } from "../../_actions/vehicleModelActions";
 import { getAllVehicleTypesAction } from "../../_actions/vehicleTypeActions";
-import CatalogDelete from "../Catalog/CatalogDelete";
+import VehicleModelDelete from "./VehicleModelDelete";
 import { CatalogError } from "../Catalog/CatalogStates";
 import { CatalogThumb } from "../Catalog/CatalogThumb";
 
@@ -174,8 +174,7 @@ const VehicleModelTable = async ({
                           <Pencil className="size-3.5" aria-hidden="true" />
                           Edit
                         </Link>
-                        <CatalogDelete
-                          entity="vehicleModel"
+                        <VehicleModelDelete
                           id={vehicleModel.id}
                           name={`${vehicleModel.brand.name} ${vehicleModel.name}`}
                         />

@@ -15,7 +15,7 @@ import { ActiveBadge } from "@/components/shared/UserBadges";
 import { ACTIVE_FILTER_OPTIONS, UrlFilterSelect } from "@/components/shared/UrlFilterSelect";
 import { TSearchParams } from "@/types";
 import { getAllVehicleTypesAction } from "../../_actions/vehicleTypeActions";
-import CatalogDelete from "../Catalog/CatalogDelete";
+import VehicleTypeDelete from "./VehicleTypeDelete";
 import { CatalogError } from "../Catalog/CatalogStates";
 
 export const VEHICLE_TYPE_COLUMNS = ["#", "Vehicle type", "Attributes", "Brands", "Models", "Status", "Action"];
@@ -122,7 +122,7 @@ const VehicleTypeTable = async ({
                         <Pencil className="size-3.5" aria-hidden="true" />
                         Edit
                       </Link>
-                      <CatalogDelete entity="vehicleType" id={vehicleType.id} name={vehicleType.name} />
+                      <VehicleTypeDelete id={vehicleType.id} name={vehicleType.name} />
                     </div>
                   </TableCell>
                 </TableRow>

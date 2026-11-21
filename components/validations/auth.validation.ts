@@ -90,6 +90,16 @@ export const VerifyPhoneOtpZodSchema = z.object({
   purpose: z.enum(["VERIFY", "LOGIN"]),
 });
 
+// form-side schemas: `purpose` is added by the action, not typed by the user
+export const PhoneOtpCodeZodSchema = z.object({
+  otp: OtpZodSchema,
+});
+
+export const VerifyPhoneFormZodSchema = z.object({
+  phone: PhoneZodSchema,
+  otp: OtpZodSchema,
+});
+
 export const ForgotPasswordZodSchema = z.object({
   identifier: IdentifierZodSchema,
 });
