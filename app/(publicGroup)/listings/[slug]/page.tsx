@@ -254,7 +254,13 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
             isOwner={Boolean(listing.isOwner)}
             chat={
               isLive
-                ? { listingId: listing.id, listingTitle: listing.title, viewerRole: me.data?.role ?? null }
+                ? {
+                    listingId: listing.id,
+                    listingTitle: listing.title,
+                    listingPrice: listing.price,
+                    isNegotiable: listing.isNegotiable,
+                    viewerRole: me.data?.role ?? null,
+                  }
                 : undefined
             }
           />

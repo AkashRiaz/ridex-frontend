@@ -15,3 +15,5 @@ export * from "./notification.type";
 export * from "./dashboard.type";
 export * from "./audit-log.type";
 export * from "./home.type";
+export * from "./offer.type";
+export * from "./test-ride.type";

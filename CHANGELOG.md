@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.10.0] — Phase 2 · Part 1: offers and test rides (2026-11-22)
+
+### Added
+- **Chat cards:**
+  - `Chat/OfferCard` shows the amount, how far it is below the asking price, the note, the status and a countdown. Accept, Counter, Decline and Withdraw appear when allowed.
+  - `Chat/TestRideCard` shows the time in the marketplace zone, the buyer's note, the seller's meeting note and the status. Confirm, Decline, Cancel, Completed and No-show appear when allowed.
+  - Both update live from the `offer:updated` and `testRide:updated` socket events. Without a socket, the thread reloads its newest messages after an offer or booking.
+- **Composer:** buyers get "Make an offer" (negotiable listings only) and "Book a test ride" buttons while the listing is live.
+- **Listing page:** "Make an offer" and "Book a test ride" sit under "Chat with seller" in the seller card. Visitors are sent to log in, and staff and the owner don't see them. After sending, the buyer lands in the chat thread.
+- **Dialogs:**
+  - `offer/OfferDialog` makes or counters an offer, with suggested amounts and the bounds the form knows.
+  - `testRide/BookTestRideDialog` is a day and time slot picker. Slots are fetched fresh each time it opens; when a slot was just taken, it shows fresh times.
+  - `shared/ReasonDialog` is the one-field confirm dialog for reasons and notes.
+  - All three use TanStack Form with zod and call their server action directly (CONVENTIONS Part G).
+- **Dashboard pages:**
+  - Offers (`/offers`) and Test Rides (`/test-rides`) in the buyer, seller, dealer, dealer staff and inspector dashboards.
+  - Test Ride Hours (`/test-ride-availability`) for sellers and dealers.
+  - Offers has Received/Sent tabs plus a status filter and search. Test Rides has Upcoming/Past tabs plus side and status filters. Every row has its actions and a link to the chat.
+  - Each page has its own `…LoadingTable` skeleton, plus error and empty states.
+- **Test ride hours:**
+  - `AvailabilityEditor` is the weekly editor (Saturday first): several ranges per day, slot length, capacity and "Copy to all days". The "Hours for" picker edits the default hours or a listing's own hours. The whole week is saved at once.
+  - `BlockedDates` adds and removes days off.
+- **Data layer:**
+  - `_actions/offerActions.ts` and `_actions/testRideActions.ts` (all reads no-store).
+  - `types/offer.type.ts` and `types/test-ride.type.ts`.
+  - `components/validations/offer.validation.ts` and `test-ride.validation.ts`.
+- **Other:**
+  - Sidebar entries for the new pages.
+  - Notification icons for the 14 new types.
+  - The Offers and Test rides categories on the notification settings page.
+- `lib/formatRideTime.ts` shows test-ride times in `siteConfig.timezone` (new `NEXT_PUBLIC_TIMEZONE`, default Asia/Dhaka), so buyer and seller see the same time.
+
+### Changed
+- `types/chat.type.ts`: messages can carry `offer` / `testRide`, the message types gain `OFFER` and `TEST_RIDE`, and the conversation listing gains `isNegotiable`.
+- The "new message" toast shows the conversation preview for offer and test-ride cards.
+
 ## [0.9.0] — Phase 1 review: conventions (2026-11-21)
 
 ### Changed

@@ -101,7 +101,12 @@ export function RealtimeProvider({ user, children }: { user: IUser | null | unde
 
       toast(conversation.counterpart.name, {
         id: `chat-${conversation.id}`,
-        description: message.type === "IMAGE" ? "📷 Sent a photo" : message.body.slice(0, 120),
+        description:
+          message.type === "IMAGE"
+            ? "📷 Sent a photo"
+            : message.type === "OFFER" || message.type === "TEST_RIDE"
+              ? conversation.lastMessagePreview
+              : message.body.slice(0, 120),
         action: {
           label: "Open",
           onClick: () => router.push(`${dashboardPath}/messages/${conversation.id}`),

@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { ImagePlus, Send, Settings2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -19,12 +19,21 @@ type MessageComposerProps = {
   onSendImages: (files: File[]) => void;
   onTyping: () => void;
   onStopTyping: () => void;
+  // extra buttons next to the photo picker (make offer, book test ride)
+  actions?: ReactNode;
 };
 
 /*
  * Textarea (Enter sends, Shift+Enter adds a line), photo picker and quick-reply chips.
  */
-export function MessageComposer({ side, onSendText, onSendImages, onTyping, onStopTyping }: MessageComposerProps) {
+export function MessageComposer({
+  side,
+  onSendText,
+  onSendImages,
+  onTyping,
+  onStopTyping,
+  actions,
+}: MessageComposerProps) {
   const [text, setText] = useState("");
   const [replies, setReplies] = useState<IQuickReplies | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);
@@ -153,6 +162,7 @@ export function MessageComposer({ side, onSendText, onSendImages, onTyping, onSt
           <ImagePlus className="size-5" aria-hidden="true" />
           <span className="sr-only">Send photos</span>
         </label>
+        {actions}
 
         <div className="relative min-w-0 flex-1">
           <label htmlFor="chat-message-input" className="sr-only">

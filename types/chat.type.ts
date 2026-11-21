@@ -1,9 +1,11 @@
 import { Role } from "./common.type";
 import { TListingStatus } from "./listing.type";
+import { IOfferCard } from "./offer.type";
+import { ITestRideCard } from "./test-ride.type";
 
 // Keep in sync with ridex-backend/src/app/module/chat
 
-export type TMessageType = "TEXT" | "IMAGE" | "SYSTEM";
+export type TMessageType = "TEXT" | "IMAGE" | "SYSTEM" | "OFFER" | "TEST_RIDE";
 
 export type TConversationSide = "buyer" | "seller";
 
@@ -30,6 +32,7 @@ export type IConversation = {
     slug: string;
     price: number;
     status: TListingStatus;
+    isNegotiable: boolean;
     isDeleted: boolean;
     coverImage: string | null;
   };
@@ -61,6 +64,11 @@ export type IMessage = {
   imageUrl: string | null;
   quickReplyKey: string | null;
   clientId: string | null;
+  // OFFER / TEST_RIDE cards and the SYSTEM notices about them carry the live state
+  offerId?: string | null;
+  offer?: IOfferCard | null;
+  testRideId?: string | null;
+  testRide?: ITestRideCard | null;
   createdAt: string;
 };
 

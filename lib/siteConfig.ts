@@ -14,6 +14,8 @@ export const siteConfig = {
     code: process.env.NEXT_PUBLIC_CURRENCY || "BDT",
     locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE || "en-BD",
   },
+  // IANA zone of the marketplace; test-ride slots are shown in this zone (match backend TIMEZONE)
+  timezone: process.env.NEXT_PUBLIC_TIMEZONE || "Asia/Dhaka",
   locales: ["en", "bn"] as const,
   defaultLocale: "en" as const,
   supportEmail: "support@ridex.demo",

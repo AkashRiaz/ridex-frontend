@@ -4,7 +4,16 @@ import { AlertCircle, Check, CheckCheck, Clock, RotateCcw } from "lucide-react";
 import { ReportDialog } from "@/components/shared/ReportDialog";
 import { formatMessageTime } from "@/lib/formatChatTime";
 import { cn } from "@/lib/utils";
-import { IChatMessage } from "@/types";
+import { IChatMessage, IConversation } from "@/types";
+import { OfferCard } from "./OfferCard";
+import { TestRideCard } from "./TestRideCard";
+
+// what OFFER / TEST_RIDE cards need to show the right actions
+export type TCardContext = {
+  meId: string;
+  conversation: Pick<IConversation, "side" | "listing">;
+  canReply: boolean;
+};
 
 type MessageBubbleProps = {
   message: IChatMessage;
@@ -13,6 +22,7 @@ type MessageBubbleProps = {
   // first bubble of a run from the same sender (adds spacing)
   startsGroup: boolean;
   onRetry?: (message: IChatMessage) => void;
+  cardContext?: TCardContext;
 };
 
 const DeliveryState = ({ message, seen }: { message: IChatMessage; seen: boolean }) => {
@@ -33,7 +43,30 @@ const DeliveryState = ({ message, seen }: { message: IChatMessage; seen: boolean
   );
 };
 
-export function MessageBubble({ message, mine, seen, startsGroup, onRetry }: MessageBubbleProps) {
+export function MessageBubble({ message, mine, seen, startsGroup, onRetry, cardContext }: MessageBubbleProps) {
+  if (message.type === "OFFER" && message.offer && cardContext) {
+    return (
+      <OfferCard
+        message={{ ...message, offer: message.offer }}
+        mine={mine}
+        meId={cardContext.meId}
+        conversation={cardContext.conversation}
+        canReply={cardContext.canReply}
+      />
+    );
+  }
+
+  if (message.type === "TEST_RIDE" && message.testRide && cardContext) {
+    return (
+      <TestRideCard
+        message={{ ...message, testRide: message.testRide }}
+        mine={mine}
+        conversation={cardContext.conversation}
+        canReply={cardContext.canReply}
+      />
+    );
+  }
+
   if (message.type === "SYSTEM") {
     return (
       <div className="my-3 flex justify-center">

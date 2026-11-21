@@ -1,6 +1,13 @@
 // Keep in sync with ridex-backend/prisma/schema/enums.prisma
 
-export type TNotificationCategory = "MESSAGES" | "LISTINGS" | "PRICE_ALERTS" | "REVIEWS" | "ACCOUNT";
+export type TNotificationCategory =
+  | "MESSAGES"
+  | "LISTINGS"
+  | "PRICE_ALERTS"
+  | "REVIEWS"
+  | "ACCOUNT"
+  | "OFFERS"
+  | "TEST_RIDES";
 
 export type TNotificationType =
   | "UNREAD_MESSAGES"
@@ -14,6 +21,20 @@ export type TNotificationType =
   | "REPORT_RESOLVED"
   | "VERIFICATION_APPROVED"
   | "VERIFICATION_REJECTED"
+  | "OFFER_RECEIVED"
+  | "OFFER_COUNTERED"
+  | "OFFER_ACCEPTED"
+  | "OFFER_DECLINED"
+  | "OFFER_WITHDRAWN"
+  | "OFFER_EXPIRED"
+  | "OFFER_CANCELLED"
+  | "OFFER_OTHER_ACCEPTED"
+  | "TEST_RIDE_REQUESTED"
+  | "TEST_RIDE_CONFIRMED"
+  | "TEST_RIDE_DECLINED"
+  | "TEST_RIDE_CANCELLED"
+  | "TEST_RIDE_EXPIRED"
+  | "TEST_RIDE_REMINDER"
   | "SYSTEM";
 
 export type INotification = {

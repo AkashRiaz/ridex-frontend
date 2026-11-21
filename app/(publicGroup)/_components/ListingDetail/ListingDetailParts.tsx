@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { BadgeCheck, CalendarDays, MapPin, ShieldCheck } from "lucide-react";
 import { StartChatDialog } from "@/components/chat/StartChatDialog";
+import { MakeOfferButton } from "@/components/offer/MakeOfferButton";
+import { BookTestRideButton } from "@/components/testRide/BookTestRideButton";
+import { cn } from "@/lib/utils";
 import { ReportDialog } from "@/components/shared/ReportDialog";
 import { RatingInline, SellerBadges } from "@/components/shared/SellerBadges";
 import { formatSpecValue } from "@/components/dynamicForm/SpecValue";
@@ -64,7 +67,13 @@ export function SellerCard({
   isSignedIn: boolean;
   isOwner: boolean;
   // set when buyers can start a conversation (live listing)
-  chat?: { listingId: string; listingTitle: string; viewerRole: Role | null };
+  chat?: {
+    listingId: string;
+    listingTitle: string;
+    listingPrice: number;
+    isNegotiable: boolean;
+    viewerRole: Role | null;
+  };
 }) {
   const location = [seller.district, seller.division].filter(Boolean).join(", ");
   const isVerified = seller.badges.phoneVerified || seller.badges.idVerified || seller.badges.dealerVerified;
@@ -119,7 +128,7 @@ export function SellerCard({
       </div>
 
       {chat && !isOwner && (
-        <div className="mt-4">
+        <div className="mt-4 space-y-2">
           <StartChatDialog
             listingId={chat.listingId}
             listingTitle={chat.listingTitle}
@@ -127,6 +136,24 @@ export function SellerCard({
             isSignedIn={isSignedIn}
             viewerRole={chat.viewerRole}
           />
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            {chat.isNegotiable && (
+              <MakeOfferButton
+                listingId={chat.listingId}
+                listingTitle={chat.listingTitle}
+                listingPrice={chat.listingPrice}
+                isSignedIn={isSignedIn}
+                viewerRole={chat.viewerRole}
+              />
+            )}
+            <BookTestRideButton
+              listingId={chat.listingId}
+              listingTitle={chat.listingTitle}
+              isSignedIn={isSignedIn}
+              viewerRole={chat.viewerRole}
+              className={cn(!chat.isNegotiable && "sm:col-span-2 lg:col-span-1 xl:col-span-2")}
+            />
+          </div>
         </div>
       )}
 

@@ -4,6 +4,7 @@ import {
   TAuditAction,
   TDocumentKind,
   TNotificationCategory,
+  TOfferStatus,
   TReportAction,
   TReportReason,
   TReportStatus,
@@ -13,6 +14,7 @@ import {
   TListingCondition,
   TListingStatus,
   TSearchSort,
+  TTestRideStatus,
   UserStatus,
 } from "@/types";
 
@@ -205,6 +207,8 @@ export const NOTIFICATION_CATEGORY_LABEL: Record<TNotificationCategory, string> 
   PRICE_ALERTS: "Saved listings",
   REVIEWS: "Reviews",
   ACCOUNT: "Account & safety",
+  OFFERS: "Offers",
+  TEST_RIDES: "Test rides",
 };
 
 export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, string> = {
@@ -213,6 +217,8 @@ export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, st
   PRICE_ALERTS: "Price drops and sales on listings you saved.",
   REVIEWS: "New reviews of you, and replies to reviews you wrote.",
   ACCOUNT: "Verification decisions and report outcomes. These are always on.",
+  OFFERS: "Offers and counter offers you receive, and answers to the ones you make.",
+  TEST_RIDES: "Test ride requests, confirmations, cancellations and reminders.",
 };
 
 // ============================================
@@ -246,3 +252,37 @@ export const AUDIT_ENTITY_LABEL: Record<string, string> = {
 
 export const auditEntityLabel = (entity: string) =>
   AUDIT_ENTITY_LABEL[entity] ?? entity.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+// ============================================
+// Offers & test rides (Phase 2 · Part 1)
+// ============================================
+
+export const OFFER_STATUS_LABEL: Record<TOfferStatus, string> = {
+  PENDING: "Waiting for reply",
+  COUNTERED: "Countered",
+  ACCEPTED: "Accepted",
+  DECLINED: "Declined",
+  WITHDRAWN: "Withdrawn",
+  EXPIRED: "Expired",
+  CANCELLED: "Closed",
+};
+
+export const TEST_RIDE_STATUS_LABEL: Record<TTestRideStatus, string> = {
+  REQUESTED: "Requested",
+  CONFIRMED: "Confirmed",
+  DECLINED: "Declined",
+  CANCELLED: "Cancelled",
+  COMPLETED: "Completed",
+  NO_SHOW: "No-show",
+  EXPIRED: "Not confirmed",
+};
+
+// roles that own listings and set test-ride hours; mirrors backend AVAILABILITY_ROLES
+export const AVAILABILITY_ROLES: Role[] = ["SELLER", "DEALER"];
+
+// 0 = Sunday … 6 = Saturday (same numbering as the backend)
+export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// mirrors backend offer/test-ride limits
+export const OFFER_LIMITS = { messageMax: 500, reasonMax: 300 };
+export const TEST_RIDE_LIMITS = { noteMax: 300, maxRules: 50, maxCapacity: 10 };

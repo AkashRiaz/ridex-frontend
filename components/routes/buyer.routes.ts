@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Ban, Bell, Flag, Heart, History, LayoutDashboard, MessageCircle, ShieldCheck, Star, UserRound } from "lucide-react";
+import { Ban, Bell, CalendarClock, Flag, HandCoins, Heart, History, LayoutDashboard, MessageCircle, ShieldCheck, Star, UserRound } from "lucide-react";
 
 const prefix = "/buyer-dashboard";
 
@@ -17,6 +17,16 @@ export const buyerRoutes: ISidebarGroup[] = [
         href: `${prefix}/messages`,
         icon: MessageCircle,
         badge: "chat",
+      },
+      {
+        label: "Offers",
+        href: `${prefix}/offers`,
+        icon: HandCoins,
+      },
+      {
+        label: "Test Rides",
+        href: `${prefix}/test-rides`,
+        icon: CalendarClock,
       },
     ],
   },

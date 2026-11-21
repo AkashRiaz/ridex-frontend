@@ -2,8 +2,10 @@
 
 import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Ban, Info, Loader2, Lock, MessageCircle } from "lucide-react";
+import { Ban, CalendarClock, HandCoins, Info, Loader2, Lock, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { OfferDialog } from "@/components/offer/OfferDialog";
+import { BookTestRideDialog } from "@/components/testRide/BookTestRideDialog";
 import { compressImage } from "@/lib/compressImage";
 import { formatDayLabel, isSameDay } from "@/lib/formatChatTime";
 import { useRealtime, useSocketEvent } from "@/hooks/useSocket";
@@ -15,7 +17,9 @@ import {
   TConversationReadEvent,
   TCursorMeta,
   TMessageNewEvent,
+  TOfferUpdatedEvent,
   TSocketAck,
+  TTestRideUpdatedEvent,
   TTypingEvent,
 } from "@/types";
 import {
@@ -75,6 +79,8 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
   const [counterpartLastReadAt, setCounterpartLastReadAt] = useState(conversation.counterpartLastReadAt);
   const [isTyping, setIsTyping] = useState(false);
   const [isUnblocking, startUnblocking] = useTransition();
+  const [offerOpen, setOfferOpen] = useState(false);
+  const [testRideOpen, setTestRideOpen] = useState(false);
 
   // the "new messages" divider is placed once, where unread started
   const [firstUnreadId] = useState(
@@ -167,6 +173,38 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
   useSocketEvent<TBlockChangedEvent>("block:changed", (event) => {
     if (event.userId === conversation.counterpart.id) router.refresh();
   });
+
+  // cards show the live state of their offer / test ride
+  useSocketEvent<TOfferUpdatedEvent>("offer:updated", ({ conversationId: id, offer }) => {
+    if (id !== conversationId) return;
+    setMessages((current) => current.map((item) => (item.offer?.id === offer.id ? { ...item, offer } : item)));
+  });
+
+  useSocketEvent<TTestRideUpdatedEvent>("testRide:updated", ({ conversationId: id, testRide }) => {
+    if (id !== conversationId) return;
+    setMessages((current) =>
+      current.map((item) => (item.testRide?.id === testRide.id ? { ...item, testRide } : item)),
+    );
+  });
+
+  /*
+   * After an offer or booking from this thread: the socket delivers the new
+   * card; without a live socket, fetch the newest page and merge it.
+   */
+  const syncLatest = async () => {
+    if (socket?.connected) return;
+
+    const result = await getMessagesAction(conversationId);
+    if (result.success && result.data) {
+      const latest = result.data;
+      setMessages((current) =>
+        latest.reduce(
+          (list, message) => mergeMessage(list.filter((item) => item.id !== message.id), message),
+          current,
+        ),
+      );
+    }
+  };
 
   useEffect(() => {
     const timers = typingTimers.current;
@@ -406,6 +444,40 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
 
   const seenAt = counterpartLastReadAt ? new Date(counterpartLastReadAt).getTime() : 0;
 
+  const cardContext = { meId, conversation, canReply: conversation.canReply };
+
+  // buyers can make an offer / book a test ride while the listing is live
+  const listingLive = conversation.listing.status === "APPROVED" && !conversation.listing.isDeleted;
+  const canOffer = conversation.side === "buyer" && listingLive && conversation.listing.isNegotiable;
+  const canBook = conversation.side === "buyer" && listingLive;
+
+  const dealActions = (canOffer || canBook) && (
+    <>
+      {canOffer && (
+        <button
+          type="button"
+          onClick={() => setOfferOpen(true)}
+          className="inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          title="Make an offer"
+        >
+          <HandCoins className="size-5" aria-hidden="true" />
+          <span className="sr-only">Make an offer</span>
+        </button>
+      )}
+      {canBook && (
+        <button
+          type="button"
+          onClick={() => setTestRideOpen(true)}
+          className="inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          title="Book a test ride"
+        >
+          <CalendarClock className="size-5" aria-hidden="true" />
+          <span className="sr-only">Book a test ride</span>
+        </button>
+      )}
+    </>
+  );
+
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col">
       <ChatHeader conversation={conversation} dashboardPath={dashboardPath} isTyping={isTyping} />
@@ -472,6 +544,7 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
                 seen={mine && seenAt >= new Date(message.createdAt).getTime()}
                 startsGroup={showDay || previous?.senderId !== message.senderId}
                 onRetry={retry}
+                cardContext={cardContext}
               />
             </Fragment>
           );
@@ -487,6 +560,7 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
           onSendImages={sendImages}
           onTyping={handleTyping}
           onStopTyping={stopTyping}
+          actions={dealActions}
         />
       ) : (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-3 border-t bg-muted/40 px-4 py-4 text-center text-sm text-muted-foreground">
@@ -507,6 +581,26 @@ export function ChatThread({ conversation, initialMessages, initialCursor, meId,
             </button>
           )}
         </div>
+      )}
+
+      {canOffer && (
+        <OfferDialog
+          open={offerOpen}
+          onOpenChange={setOfferOpen}
+          mode={{ kind: "make", listingId: conversation.listing.id }}
+          listingTitle={conversation.listing.title}
+          listingPrice={conversation.listing.price}
+          onDone={syncLatest}
+        />
+      )}
+      {canBook && (
+        <BookTestRideDialog
+          open={testRideOpen}
+          onOpenChange={setTestRideOpen}
+          listingId={conversation.listing.id}
+          listingTitle={conversation.listing.title}
+          onDone={syncLatest}
+        />
       )}
     </div>
   );
