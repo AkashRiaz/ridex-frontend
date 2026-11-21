@@ -248,7 +248,16 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
             </div>
           </section>
 
-          <SellerCard seller={listing.seller} isSignedIn={isSignedIn} isOwner={Boolean(listing.isOwner)} />
+          <SellerCard
+            seller={listing.seller}
+            isSignedIn={isSignedIn}
+            isOwner={Boolean(listing.isOwner)}
+            chat={
+              isLive
+                ? { listingId: listing.id, listingTitle: listing.title, viewerRole: me.data?.role ?? null }
+                : undefined
+            }
+          />
 
           {!listing.isOwner && (isLive || listing.status === "SOLD") && (
             <div className="flex justify-center">

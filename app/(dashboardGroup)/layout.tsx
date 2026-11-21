@@ -7,6 +7,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardMainContent from "@/components/dashboard/DashboardMainContent";
 import DealerVerificationBanner from "@/components/dashboard/DealerVerificationBanner";
+import { ChatInboxLink } from "@/components/shared/ChatInboxLink";
+import { NotificationBell } from "@/components/shared/NotificationBell";
+import { RealtimeProvider } from "@/components/shared/RealtimeProvider";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { getMe } from "@/service/getMe";
 
@@ -20,6 +23,7 @@ const DashboardGroupLayout = async ({
   const user = await getMe();
 
   return (
+    <RealtimeProvider user={user.data}>
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
       <TooltipProvider>
         <SidebarProvider className="min-h-0 flex-1">
@@ -33,7 +37,11 @@ const DashboardGroupLayout = async ({
                 <p className="text-sm font-semibold">Dashboard</p>
               </div>
 
-              <ThemeToggle />
+              <div className="flex items-center gap-1">
+                <ChatInboxLink />
+                <NotificationBell />
+                <ThemeToggle />
+              </div>
             </div>
 
             <DealerVerificationBanner user={user.data} />
@@ -43,6 +51,7 @@ const DashboardGroupLayout = async ({
         </SidebarProvider>
       </TooltipProvider>
     </div>
+    </RealtimeProvider>
   );
 };
 

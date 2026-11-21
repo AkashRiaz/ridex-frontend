@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Bike, ClipboardCheck, Flag, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
+import { Bell, Bike, ClipboardCheck, Flag, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
 
 const prefix = "/admin-dashboard";
 
@@ -62,6 +62,12 @@ export const adminRoutes: ISidebarGroup[] = [
   {
     title: "Account",
     items: [
+      {
+        label: "Notifications",
+        href: `${prefix}/notifications`,
+        icon: Bell,
+        badge: "notifications",
+      },
       {
         label: "My Profile",
         href: `${prefix}/profile`,

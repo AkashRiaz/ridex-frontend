@@ -1,5 +1,57 @@
 # Changelog
 
+## [0.6.0] — Phase 1 · Part 5: real-time chat + notifications (2026-11-21)
+
+### Added
+- **Realtime layer**:
+  - `components/shared/RealtimeProvider.tsx` (mounted in the public and dashboard layouts) keeps one Socket.io connection per signed-in tab.
+  - The handshake token comes from the `service/getSocketToken.ts` server action and is fetched again on every reconnect, so the httpOnly access token never reaches the browser.
+  - `hooks/useSocket.ts` provides `useRealtime()` (connection, live chat and notification counts, the open thread) and `useSocketEvent()`.
+  - Toasts for new messages (not for the thread you have open) and for new notifications.
+- **Messages** (`/<role>-dashboard/messages` and `/messages/[conversationId]`, for buyer, seller, dealer, dealer staff and inspector):
+  - Layout: two panes on desktop, one at a time on mobile.
+  - Inbox:
+    - Tabs: All, Buying, Selling and Archived (buyers see Inbox and Archived).
+    - Search and pagination.
+    - Live reordering, unread badges, online dots and "typing…" previews.
+  - Thread messages:
+    - Optimistic send over the socket with an ack, falling back to REST. Pending, sent, seen and failed states, with a retry button.
+    - Photo messages: up to 4, compressed in the browser, previewed while uploading.
+    - Typing indicator, read receipts, date separators and a "New messages" divider.
+    - Older messages load on scroll-up without losing your place.
+  - Thread header:
+    - The listing strip, with price and status.
+    - A menu with Archive, Block/Unblock (with a confirmation) and Report user.
+    - Each message has a report action.
+  - Thread banners and composer:
+    - Banners for sold, expired or in-review listings, and a read-only footer with the reason (blocked, account gone, listing removed). Unblock is one click.
+    - Quick-reply chips (built-in buyer or seller replies plus your own), with a Manage dialog to add or delete your own (up to 10).
+- **Chat with seller** on listing detail: a dialog with quick questions or a first message. It opens the existing thread if there is one. Signed-out visitors go to login and come back. Staff accounts don't see it.
+- **Notification bell** in the navbar and the dashboard header:
+  - Live unread count.
+  - Opening it shows the latest 8; clicking one marks it read and follows its link.
+  - Mark all read, a settings link and View all.
+- **Chat badge** in the navbar and dashboard header, plus unread counts on the sidebar's Messages and Notifications items (`ISidebarItem.badge`).
+- **Notifications page** (`/<role>-dashboard/notifications`, all 8 roles):
+  - All and Unread tabs, a category filter and pagination.
+  - Live arrivals, mark read on open, delete, and mark all read.
+- **Notification settings** (`/notifications/settings`):
+  - A category × channel switch grid that saves on change.
+  - Locked channels show a lock.
+  - A hint appears if your email is not verified.
+- **Blocked users** page (`/<role>-dashboard/blocked-users`) with Unblock.
+- **`/unsubscribe`** public page for email footer links. Unsubscribing takes an explicit click, so mail scanners can't trigger it.
+- **Staff report detail for messages**: the reported message plus the 5 messages before it, with the reported one highlighted. Admins can resolve with "Block user".
+- **Data layer**: `chatActions`, `quickReplyActions`, `userBlockActions` and `notificationActions`. Types: `chat.type.ts` and `notification.type.ts`. Helpers: `lib/formatChatTime.ts`, plus `CHAT_ROLES`, `isChatRole` and the notification category labels in `lib/enum.ts`.
+- **Sidebars**:
+  - Chat roles get Messages (with a badge) and Blocked Users.
+  - Every role gets Notifications (with a badge).
+- **Env**: `NEXT_PUBLIC_SOCKET_URL` (the backend origin), exposed as `siteConfig.socketUrl`.
+
+### Changed
+- The seller card on listing detail replaces the "chat coming soon" note with the Chat with seller button and a safety tip.
+- Report types gain `message` / `messageContext`, and "My reports" shows message reports.
+
 ## [0.5.0] — Phase 1 · Part 4: wishlist, reviews, reports, verification (2026-11-21)
 
 ### Added

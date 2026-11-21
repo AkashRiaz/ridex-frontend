@@ -28,6 +28,16 @@ export type IMyReport = {
   listing: { id: string; title: string; slug: string } | null;
   reportedUser: { id: string; name: string } | null;
   review: { id: string; rating: number } | null;
+  message?: { id: string; body: string; type: "TEXT" | "IMAGE" | "SYSTEM" } | null;
+};
+
+export type IReportedMessage = {
+  id: string;
+  type: "TEXT" | "IMAGE" | "SYSTEM";
+  body: string;
+  imageUrl: string | null;
+  createdAt: string;
+  sender: { id: string; name: string } | null;
 };
 
 export type IReport = {
@@ -71,9 +81,15 @@ export type IReport = {
     reviewer: { id: string; name: string };
     seller: { id: string; name: string };
   } | null;
+  message?: (Omit<IReportedMessage, "sender"> & {
+    conversationId: string;
+    sender: { id: string; name: string; email: string | null; role: Role; status: UserStatus; isDeleted: boolean } | null;
+  }) | null;
 };
 
 export type IReportDetail = IReport & {
+  // the reported message and up to 5 before it, oldest first
+  messageContext?: IReportedMessage[];
   otherReports: {
     id: string;
     reason: TReportReason;

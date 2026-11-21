@@ -10,3 +10,5 @@ export * from "./wishlist.type";
 export * from "./review.type";
 export * from "./report.type";
 export * from "./verification.type";
+export * from "./chat.type";
+export * from "./notification.type";

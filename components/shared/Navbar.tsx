@@ -31,6 +31,8 @@ import { getDashboardPath, getProfilePath } from "@/lib/dashboardPath";
 import { UserAvatar } from "./UserAvatar";
 import { siteConfig } from "@/lib/siteConfig";
 import { ThemeToggle } from "./ThemeToggle";
+import { ChatInboxLink } from "./ChatInboxLink";
+import { NotificationBell } from "./NotificationBell";
 
 // Public navigation links (pages are added phase by phase)
 const navItems = [
@@ -165,6 +167,12 @@ export function Navbar({ user }: NavbarProps) {
               >
                 Sell your bike
               </Link>
+            )}
+            {isLoggedIn && (
+              <>
+                <ChatInboxLink />
+                <NotificationBell />
+              </>
             )}
             <ThemeToggle />
 

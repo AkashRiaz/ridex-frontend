@@ -22,7 +22,9 @@ const actionsFor = (report: IReportDetail, role: Role): TReportAction[] => {
     actions.push("TAKE_DOWN_LISTING");
     if (isAdminRole(role)) actions.push("BLOCK_USER");
   }
-  if (report.targetType === "USER" && isAdminRole(role)) actions.push("BLOCK_USER");
+  if ((report.targetType === "USER" || report.targetType === "MESSAGE") && isAdminRole(role)) {
+    actions.push("BLOCK_USER");
+  }
   if (report.targetType === "REVIEW") actions.push("HIDE_REVIEW");
 
   return actions;

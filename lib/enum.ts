@@ -2,6 +2,7 @@ import {
   Gender,
   Role,
   TDocumentKind,
+  TNotificationCategory,
   TReportAction,
   TReportReason,
   TReportStatus,
@@ -185,4 +186,30 @@ export const DOCUMENT_KIND_LABEL: Record<TDocumentKind, string> = {
   TRADE_LICENSE: "Trade license",
   TIN_CERTIFICATE: "TIN certificate",
   SHOWROOM_PHOTO: "Showroom photo",
+};
+
+// ============================================
+// Chat & notifications (Phase 1 · Part 5)
+// ============================================
+
+// marketplace roles that can chat; mirrors backend CHAT_ROLES
+export const CHAT_ROLES: Role[] = ["BUYER", "SELLER", "DEALER", "DEALER_STAFF", "INSPECTOR"];
+
+export const isChatRole = (role: Role | null | undefined): role is Role =>
+  Boolean(role && CHAT_ROLES.includes(role));
+
+export const NOTIFICATION_CATEGORY_LABEL: Record<TNotificationCategory, string> = {
+  MESSAGES: "Messages",
+  LISTINGS: "My listings",
+  PRICE_ALERTS: "Saved listings",
+  REVIEWS: "Reviews",
+  ACCOUNT: "Account & safety",
+};
+
+export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, string> = {
+  MESSAGES: "An email when a message stays unread while you are away. The chat badge is always on.",
+  LISTINGS: "When your listing is approved, needs changes or expires.",
+  PRICE_ALERTS: "Price drops and sales on listings you saved.",
+  REVIEWS: "New reviews of you, and replies to reviews you wrote.",
+  ACCOUNT: "Verification decisions and report outcomes. These are always on.",
 };

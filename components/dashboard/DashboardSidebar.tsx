@@ -21,11 +21,17 @@ import { Bike } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { roleRoutes } from "../routes";
+import { useRealtime } from "@/hooks/useSocket";
 
 export default function DashboardSidebar({ user }: NavbarProps) {
   const pathname = usePathname();
 
   const { isMobile, setOpenMobile } = useSidebar();
+
+  const { chatUnread, notificationUnread } = useRealtime();
+
+  const badgeCount = (badge?: "chat" | "notifications") =>
+    badge === "chat" ? chatUnread : badge === "notifications" ? notificationUnread : 0;
 
   const role = user?.data?.role;
 
@@ -90,6 +96,8 @@ export default function DashboardSidebar({ user }: NavbarProps) {
 
                   const Icon = item.icon;
 
+                  const count = badgeCount(item.badge);
+
                   return (
                     <SidebarMenuItem key={item.href} className="py-0.5">
                       <SidebarMenuButton
@@ -107,6 +115,15 @@ export default function DashboardSidebar({ user }: NavbarProps) {
                         <Icon className="size-4" aria-hidden="true" />
 
                         <span>{item.label}</span>
+
+                        {count > 0 && (
+                          <span
+                            className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground"
+                            aria-label={`${count} unread`}
+                          >
+                            {count > 99 ? "99+" : count}
+                          </span>
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );

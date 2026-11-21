@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { BadgeCheck, CalendarDays, MapPin, ShieldCheck } from "lucide-react";
+import { StartChatDialog } from "@/components/chat/StartChatDialog";
 import { ReportDialog } from "@/components/shared/ReportDialog";
 import { RatingInline, SellerBadges } from "@/components/shared/SellerBadges";
 import { formatSpecValue } from "@/components/dynamicForm/SpecValue";
 import { UserAvatar } from "@/components/shared/UserAvatar";
 import { ROLE_LABEL } from "@/lib/enum";
-import { IListingDetail, IListingSeller, IVehicleAttribute, TSpecs } from "@/types";
+import { IListingDetail, IListingSeller, IVehicleAttribute, Role, TSpecs } from "@/types";
 
 /*
  * Specs grouped exactly like the vehicle type's attribute schema.
@@ -57,10 +58,13 @@ export function SellerCard({
   seller,
   isSignedIn,
   isOwner,
+  chat,
 }: {
   seller: IListingSeller;
   isSignedIn: boolean;
   isOwner: boolean;
+  // set when buyers can start a conversation (live listing)
+  chat?: { listingId: string; listingTitle: string; viewerRole: Role | null };
 }) {
   const location = [seller.district, seller.division].filter(Boolean).join(", ");
   const isVerified = seller.badges.phoneVerified || seller.badges.idVerified || seller.badges.dealerVerified;
@@ -114,8 +118,20 @@ export function SellerCard({
         {!isOwner && <ReportDialog targetType="USER" targetId={seller.id} isSignedIn={isSignedIn} label="Report seller" />}
       </div>
 
+      {chat && !isOwner && (
+        <div className="mt-4">
+          <StartChatDialog
+            listingId={chat.listingId}
+            listingTitle={chat.listingTitle}
+            sellerName={seller.name}
+            isSignedIn={isSignedIn}
+            viewerRole={chat.viewerRole}
+          />
+        </div>
+      )}
+
       <p className="mt-4 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
-        Chat with the seller is coming soon. Meet in a safe public place and inspect the papers before paying.
+        Meet in a safe public place, inspect the papers before paying, and never share OTP codes.
       </p>
     </section>
   );

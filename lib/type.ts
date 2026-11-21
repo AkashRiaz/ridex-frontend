@@ -8,6 +8,8 @@ export type ISidebarItem = {
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
+  // live unread count shown next to the label
+  badge?: "chat" | "notifications";
 };
 
 export type ISidebarGroup = {

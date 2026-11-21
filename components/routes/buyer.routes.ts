@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Flag, Heart, History, LayoutDashboard, ShieldCheck, Star, UserRound } from "lucide-react";
+import { Ban, Bell, Flag, Heart, History, LayoutDashboard, MessageCircle, ShieldCheck, Star, UserRound } from "lucide-react";
 
 const prefix = "/buyer-dashboard";
 
@@ -11,6 +11,12 @@ export const buyerRoutes: ISidebarGroup[] = [
         label: "Overview",
         href: `${prefix}`,
         icon: LayoutDashboard,
+      },
+      {
+        label: "Messages",
+        href: `${prefix}/messages`,
+        icon: MessageCircle,
+        badge: "chat",
       },
     ],
   },
@@ -46,6 +52,17 @@ export const buyerRoutes: ISidebarGroup[] = [
         label: "Verification",
         href: `${prefix}/verification`,
         icon: ShieldCheck,
+      },
+      {
+        label: "Notifications",
+        href: `${prefix}/notifications`,
+        icon: Bell,
+        badge: "notifications",
+      },
+      {
+        label: "Blocked Users",
+        href: `${prefix}/blocked-users`,
+        icon: Ban,
       },
       {
         label: "My Profile",

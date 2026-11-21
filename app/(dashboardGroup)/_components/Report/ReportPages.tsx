@@ -28,7 +28,7 @@ import {
 } from "@/lib/enum";
 import { cn } from "@/lib/utils";
 import { getMe } from "@/service/getMe";
-import { IMyReport, IReport, TListingStatus, TReportStatus, TSearchParams } from "@/types";
+import { IMyReport, IReport, IReportDetail, TListingStatus, TReportStatus, TSearchParams } from "@/types";
 import { getMyReportsAction, getReportByIdAction, getReportsAction } from "../../_actions/reportActions";
 import { CatalogError } from "../Catalog/CatalogStates";
 import { CatalogThumb } from "../Catalog/CatalogThumb";
@@ -51,6 +51,10 @@ const targetTitle = (report: IMyReport | IReport) => {
   if (report.listing) return report.listing.title;
   if (report.reportedUser) return report.reportedUser.name;
   if (report.review) return `${report.review.rating}★ review`;
+  if (report.message) {
+    const text = report.message.type === "IMAGE" ? "Photo" : report.message.body;
+    return `Message: "${text.length > 60 ? `${text.slice(0, 59)}…` : text}"`;
+  }
   return "Removed content";
 };
 
@@ -369,6 +373,53 @@ const TargetSnapshot = ({ report, dashboardPath }: { report: IReport; dashboardP
         </p>
         <RatingStars rating={review.rating} />
         <p className="whitespace-pre-line rounded-lg bg-muted/50 p-3 text-sm">{review.comment || "No comment"}</p>
+      </div>
+    );
+  }
+
+  if (report.message) {
+    const sender = report.message.sender;
+    const context = (report as IReportDetail).messageContext ?? [];
+
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Sent by {sender?.name ?? "a deleted user"}
+          {sender && (
+            <>
+              {" "}· {ROLE_LABEL[sender.role]} · <StatusBadge status={sender.status} isDeleted={sender.isDeleted} />
+            </>
+          )}
+        </p>
+        <ol className="space-y-2 rounded-lg bg-muted/40 p-3" aria-label="Conversation excerpt">
+          {context.map((message) => {
+            const isReported = message.id === report.message?.id;
+
+            return (
+              <li
+                key={message.id}
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm",
+                  isReported ? "border border-destructive/40 bg-destructive/5" : "bg-background",
+                )}
+              >
+                <p className="text-xs font-medium text-muted-foreground">
+                  {message.sender?.name ?? "System"} · {formatRelativeDate(message.createdAt).toLowerCase()}
+                  {isReported && " · reported"}
+                </p>
+                {message.type === "IMAGE" && message.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={message.imageUrl} alt="Photo sent in chat" className="mt-1 max-h-40 rounded-md" />
+                ) : (
+                  <p className="mt-0.5 whitespace-pre-line">{message.body}</p>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+        <p className="text-xs text-muted-foreground">
+          Staff can only see the reported message and the few before it.
+        </p>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Flag, Heart, History, LayoutDashboard, UserRound } from "lucide-react";
+import { Ban, Bell, Flag, Heart, History, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
 
 const prefix = "/dealer-staff-dashboard";
 
@@ -11,6 +11,12 @@ export const dealerStaffRoutes: ISidebarGroup[] = [
         label: "Overview",
         href: `${prefix}`,
         icon: LayoutDashboard,
+      },
+      {
+        label: "Messages",
+        href: `${prefix}/messages`,
+        icon: MessageCircle,
+        badge: "chat",
       },
     ],
   },
@@ -37,6 +43,17 @@ export const dealerStaffRoutes: ISidebarGroup[] = [
   {
     title: "Account",
     items: [
+      {
+        label: "Notifications",
+        href: `${prefix}/notifications`,
+        icon: Bell,
+        badge: "notifications",
+      },
+      {
+        label: "Blocked Users",
+        href: `${prefix}/blocked-users`,
+        icon: Ban,
+      },
       {
         label: "My Profile",
         href: `${prefix}/profile`,

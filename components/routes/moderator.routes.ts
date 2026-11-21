@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { ClipboardCheck, Flag, LayoutDashboard, UserRound, Users } from "lucide-react";
+import { Bell, ClipboardCheck, Flag, LayoutDashboard, UserRound, Users } from "lucide-react";
 
 const prefix = "/moderator-dashboard";
 
@@ -32,6 +32,12 @@ export const moderatorRoutes: ISidebarGroup[] = [
   {
     title: "Account",
     items: [
+      {
+        label: "Notifications",
+        href: `${prefix}/notifications`,
+        icon: Bell,
+        badge: "notifications",
+      },
       {
         label: "My Profile",
         href: `${prefix}/profile`,
