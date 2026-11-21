@@ -2,14 +2,16 @@ import { IUserResponse } from "@/types";
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
+export type TSidebarBadge = "chat" | "notifications" | "listings" | "reports" | "verifications";
+
 export type ISidebarItem = {
   label: string;
   href: string;
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
-  // live unread count shown next to the label
-  badge?: "chat" | "notifications";
+  // live count shown next to the label (unread messages, or staff queue sizes)
+  badge?: TSidebarBadge;
 };
 
 export type ISidebarGroup = {

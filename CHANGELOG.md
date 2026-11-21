@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.7.0] — Phase 1 · Part 6: role dashboards + audit log (2026-11-21)
+
+### Added
+- **Charts**: `recharts` through the shadcn `chart` component (`components/ui/chart.tsx`). The colours come from the existing `--chart-N` tokens, so light and dark mode both work.
+- **Overview pages** for all 8 roles (`/<role>-dashboard`) replace the placeholder. Each one has 7, 30 and 90 day tabs (`?range=`), stat cards with change vs the previous period, a loading skeleton, and empty and error states.
+  - Super admin and admin:
+    - Users, live listings, open reports and conversations, plus marketplace activity, listings by status, top brands, listings by division, and trust and chats.
+    - A moderation snapshot and accounts by role (super admin) or by status (admin).
+    - Recent activity linking to the audit log, and alerts like "Review 12 pending listings →".
+  - Moderator: queue sizes, my decisions per day, open reports by reason and type, and the items waiting longest.
+  - Seller and dealer: views, saves, chats, buyer interest per day, listings by status, top listings, chat-to-sale rate, trust (rating and verification), listings expiring this week, and the latest reviews. Shows a "List your first bike" card when empty.
+  - Buyer, dealer staff and inspector: saved listings, recently viewed, chats, reports, activity per day, saved listings by brand, recently saved, and account verification. The buyer keeps the Start selling card.
+- **Audit log** (`/admin-dashboard/audit-logs` and `/super-admin-dashboard/audit-logs`):
+  - Table with search, action, entity and date filters, and pagination.
+  - Detail page with the acting user, the request IP and user agent, before and after values side by side, a link to the record, "Full history" and "More by this user".
+- **Sidebar badges for staff**: Listings, Reports and Verifications show live queue counts (`hooks/useQueueCounts.ts`). They refresh every minute while the tab is visible, and after every navigation.
+- Admin and super admin sidebars gain an Audit Log item.
+
+### Removed
+- `components/dashboard/DashboardOverviewPlaceholder.tsx`, replaced by the real overviews.
+
 ## [0.6.0] — Phase 1 · Part 5: real-time chat + notifications (2026-11-21)
 
 ### Added

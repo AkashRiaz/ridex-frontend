@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import { ISidebarGroup, NavbarProps } from "@/lib/type";
+import { ISidebarGroup, NavbarProps, TSidebarBadge } from "@/lib/type";
 import { getDashboardPath, isRole } from "@/lib/dashboardPath";
 import { siteConfig } from "@/lib/siteConfig";
 import { Bike } from "lucide-react";
@@ -22,6 +22,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { roleRoutes } from "../routes";
 import { useRealtime } from "@/hooks/useSocket";
+import { useQueueCounts } from "@/hooks/useQueueCounts";
 
 export default function DashboardSidebar({ user }: NavbarProps) {
   const pathname = usePathname();
@@ -30,10 +31,29 @@ export default function DashboardSidebar({ user }: NavbarProps) {
 
   const { chatUnread, notificationUnread } = useRealtime();
 
-  const badgeCount = (badge?: "chat" | "notifications") =>
-    badge === "chat" ? chatUnread : badge === "notifications" ? notificationUnread : 0;
-
   const role = user?.data?.role;
+
+  // staff only: pending listings, open reports, pending verifications
+  const queueCounts = useQueueCounts(isRole(role) ? role : null);
+
+  const badgeCount = (badge?: TSidebarBadge) => {
+    switch (badge) {
+      case "chat":
+        return chatUnread;
+      case "notifications":
+        return notificationUnread;
+      case "listings":
+      case "reports":
+        return queueCounts?.[badge] ?? 0;
+      case "verifications":
+        return queueCounts?.verifications ?? 0;
+      default:
+        return 0;
+    }
+  };
+
+  const badgeLabel = (badge: TSidebarBadge | undefined, count: number) =>
+    badge === "chat" || badge === "notifications" ? `${count} unread` : `${count} waiting`;
 
   const navItems: ISidebarGroup[] = isRole(role) ? roleRoutes[role] : [];
 
@@ -119,7 +139,7 @@ export default function DashboardSidebar({ user }: NavbarProps) {
                         {count > 0 && (
                           <span
                             className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground"
-                            aria-label={`${count} unread`}
+                            aria-label={badgeLabel(item.badge, count)}
                           >
                             {count > 99 ? "99+" : count}
                           </span>

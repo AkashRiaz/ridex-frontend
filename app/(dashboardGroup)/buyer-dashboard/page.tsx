@@ -1,19 +1,21 @@
-import DashboardOverviewPlaceholder from "@/components/dashboard/DashboardOverviewPlaceholder";
+import { BuyerDashboardPage } from "@/app/(dashboardGroup)/_components/Dashboard/DashboardPages";
 import StartSelling from "../_components/Listing/StartSelling";
 
 export const metadata = {
   title: "Buyer Dashboard",
 };
 
-const BuyerDashboardPage = () => {
+const BuyerDashboardPageRoute = (props: PageProps<"/buyer-dashboard">) => {
   return (
-    <div className="space-y-2">
-      <div className="mx-auto max-w-[1600px] px-2 pt-2 md:px-5 md:pt-5">
-        <StartSelling />
-      </div>
-      <DashboardOverviewPlaceholder title="Buyer Dashboard" />
-    </div>
+    <BuyerDashboardPage
+      searchParams={props.searchParams}
+      dashboardPath="/buyer-dashboard"
+      title="Welcome back"
+      description="Your saved bikes, chats and account"
+      showTrustLinks
+      banner={<StartSelling />}
+    />
   );
 };
 
-export default BuyerDashboardPage;
+export default BuyerDashboardPageRoute;

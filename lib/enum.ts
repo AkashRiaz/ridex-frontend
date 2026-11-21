@@ -1,6 +1,7 @@
 import {
   Gender,
   Role,
+  TAuditAction,
   TDocumentKind,
   TNotificationCategory,
   TReportAction,
@@ -213,3 +214,35 @@ export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, st
   REVIEWS: "New reviews of you, and replies to reviews you wrote.",
   ACCOUNT: "Verification decisions and report outcomes. These are always on.",
 };
+
+// ============================================
+// Audit log (Phase 1 · Part 6)
+// ============================================
+
+export const AUDIT_ACTION_LABEL: Record<TAuditAction, string> = {
+  CREATE: "Created",
+  UPDATE: "Updated",
+  DELETE: "Deleted",
+  LOGIN: "Signed in",
+  LOGOUT: "Signed out",
+  APPROVE: "Approved",
+  REJECT: "Rejected",
+  PUBLISH: "Published",
+  CANCEL: "Cancelled",
+  PAYMENT: "Payment",
+};
+
+// entity names as the backend writes them → readable labels
+export const AUDIT_ENTITY_LABEL: Record<string, string> = {
+  User: "User",
+  Listing: "Listing",
+  Review: "Review",
+  Report: "Report",
+  VerificationRequest: "Verification",
+  Brand: "Brand",
+  VehicleType: "Vehicle type",
+  VehicleModel: "Vehicle model",
+};
+
+export const auditEntityLabel = (entity: string) =>
+  AUDIT_ENTITY_LABEL[entity] ?? entity.replace(/([a-z])([A-Z])/g, "$1 $2");

@@ -12,3 +12,5 @@ export * from "./report.type";
 export * from "./verification.type";
 export * from "./chat.type";
 export * from "./notification.type";
+export * from "./dashboard.type";
+export * from "./audit-log.type";

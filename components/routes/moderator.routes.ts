@@ -16,11 +16,13 @@ export const moderatorRoutes: ISidebarGroup[] = [
         label: "Listings",
         href: `${prefix}/listings`,
         icon: ClipboardCheck,
+        badge: "listings",
       },
       {
         label: "Reports",
         href: `${prefix}/reports`,
         icon: Flag,
+        badge: "reports",
       },
       {
         label: "Users",

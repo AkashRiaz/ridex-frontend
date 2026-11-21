@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Bell, Bike, ClipboardCheck, Flag, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
+import { Bell, Bike, ClipboardCheck, Flag, History, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
 
 const prefix = "/super-admin-dashboard";
 
@@ -16,21 +16,29 @@ export const superAdminRoutes: ISidebarGroup[] = [
         label: "Listings",
         href: `${prefix}/listings`,
         icon: ClipboardCheck,
+        badge: "listings",
       },
       {
         label: "Reports",
         href: `${prefix}/reports`,
         icon: Flag,
+        badge: "reports",
       },
       {
         label: "Verifications",
         href: `${prefix}/verifications`,
         icon: ShieldCheck,
+        badge: "verifications",
       },
       {
         label: "Users",
         href: `${prefix}/users`,
         icon: Users,
+      },
+      {
+        label: "Audit Log",
+        href: `${prefix}/audit-logs`,
+        icon: History,
       },
       {
         label: "Create User",
