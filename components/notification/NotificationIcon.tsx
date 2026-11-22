@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, CalendarClock, Flag, HandCoins, MessageCircle, Star, Tag, TrendingDown } from "lucide-react";
+import { BadgeCheck, Bell, BellRing, CalendarClock, Flag, HandCoins, MessageCircle, Star, Tag, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TNotificationType } from "@/types";
 
@@ -28,6 +28,8 @@ const ICONS: Partial<Record<TNotificationType, typeof Bell>> = {
   TEST_RIDE_CANCELLED: CalendarClock,
   TEST_RIDE_EXPIRED: CalendarClock,
   TEST_RIDE_REMINDER: CalendarClock,
+  SAVED_SEARCH_MATCH: BellRing,
+  SAVED_SEARCH_PRICE_DROP: TrendingDown,
 };
 
 const TONE: Partial<Record<TNotificationType, string>> = {
@@ -45,6 +47,8 @@ const TONE: Partial<Record<TNotificationType, string>> = {
   TEST_RIDE_REMINDER: "bg-primary/15 text-primary",
   TEST_RIDE_DECLINED: "bg-destructive/10 text-destructive",
   TEST_RIDE_CANCELLED: "bg-destructive/10 text-destructive",
+  SAVED_SEARCH_MATCH: "bg-primary/15 text-primary",
+  SAVED_SEARCH_PRICE_DROP: "bg-primary/15 text-primary",
 };
 
 export function NotificationIcon({ type, className }: { type: TNotificationType; className?: string }) {

@@ -17,3 +17,6 @@ export * from "./audit-log.type";
 export * from "./home.type";
 export * from "./offer.type";
 export * from "./test-ride.type";
+export * from "./price-insight.type";
+export * from "./compare.type";
+export * from "./saved-search.type";

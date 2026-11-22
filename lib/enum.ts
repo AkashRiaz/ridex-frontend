@@ -9,6 +9,7 @@ import {
   TReportReason,
   TReportStatus,
   TReportTargetType,
+  TSavedSearchAlertFrequency,
   TVerificationStatus,
   TVerificationType,
   TListingCondition,
@@ -204,7 +205,7 @@ export const isChatRole = (role: Role | null | undefined): role is Role =>
 export const NOTIFICATION_CATEGORY_LABEL: Record<TNotificationCategory, string> = {
   MESSAGES: "Messages",
   LISTINGS: "My listings",
-  PRICE_ALERTS: "Saved listings",
+  PRICE_ALERTS: "Price drops & saved searches",
   REVIEWS: "Reviews",
   ACCOUNT: "Account & safety",
   OFFERS: "Offers",
@@ -214,7 +215,7 @@ export const NOTIFICATION_CATEGORY_LABEL: Record<TNotificationCategory, string> 
 export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, string> = {
   MESSAGES: "An email when a message stays unread while you are away. The chat badge is always on.",
   LISTINGS: "When your listing is approved, needs changes or expires.",
-  PRICE_ALERTS: "Price drops and sales on listings you saved.",
+  PRICE_ALERTS: "Price drops and sales on listings you saved, and new matches for your saved searches.",
   REVIEWS: "New reviews of you, and replies to reviews you wrote.",
   ACCOUNT: "Verification decisions and report outcomes. These are always on.",
   OFFERS: "Offers and counter offers you receive, and answers to the ones you make.",
@@ -286,3 +287,22 @@ export const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"
 // mirrors backend offer/test-ride limits
 export const OFFER_LIMITS = { messageMax: 500, reasonMax: 300 };
 export const TEST_RIDE_LIMITS = { noteMax: 300, maxRules: 50, maxCapacity: 10 };
+
+// ============================================
+// Saved searches (Phase 2 · Part 2b)
+// ============================================
+
+export const SAVED_SEARCH_FREQUENCY_LABEL: Record<TSavedSearchAlertFrequency, string> = {
+  INSTANT: "Instantly",
+  DAILY: "Daily digest",
+  OFF: "No alerts",
+};
+
+export const SAVED_SEARCH_FREQUENCY_DESCRIPTION: Record<TSavedSearchAlertFrequency, string> = {
+  INSTANT: "As soon as a matching listing goes live (up to 10 a day, the rest in a daily digest).",
+  DAILY: "One summary every morning.",
+  OFF: "Keep the search without alerts.",
+};
+
+// mirrors SAVED_SEARCH_NAME_MAX in ridex-backend savedSearch.utils.ts
+export const SAVED_SEARCH_NAME_MAX = 80;

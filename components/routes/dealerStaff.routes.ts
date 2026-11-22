@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Ban, Bell, CalendarClock, Flag, HandCoins, Heart, History, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
+import { Ban, Bell, BellRing, CalendarClock, Flag, HandCoins, Heart, History, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
 
 const prefix = "/dealer-staff-dashboard";
 
@@ -37,6 +37,11 @@ export const dealerStaffRoutes: ISidebarGroup[] = [
         label: "Saved",
         href: `${prefix}/saved`,
         icon: Heart,
+      },
+      {
+        label: "Saved Searches",
+        href: `${prefix}/saved-searches`,
+        icon: BellRing,
       },
       {
         label: "Recently Viewed",

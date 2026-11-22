@@ -13,6 +13,7 @@ import {
   formatMileage,
   formatRelativeDate,
 } from "./ListingBits";
+import { CompareButton } from "./CompareButton";
 import { WishlistButton } from "./WishlistButton";
 
 type ListingCardProps = {
@@ -26,6 +27,8 @@ type ListingCardProps = {
   wishlist?: { saved: boolean; isSignedIn: boolean };
   // hide the seller line on the seller's own pages
   showSeller?: boolean;
+  // compare toggle; defaults to live listings opened on the public page
+  showCompare?: boolean;
 };
 
 /*
@@ -39,8 +42,10 @@ export function ListingCard({
   priority = false,
   wishlist,
   showSeller = true,
+  showCompare,
 }: ListingCardProps) {
   const isList = variant === "list";
+  const canCompare = showCompare ?? (!href && listing.status === "APPROVED");
   const location = [listing.area, listing.district].filter(Boolean).join(", ");
 
   return (
@@ -79,9 +84,23 @@ export function ListingCard({
           {showStatus && <ListingStatusBadge status={listing.status} />}
         </div>
 
-        {wishlist && (
-          <div className="absolute right-3 top-3">
-            <WishlistButton listingId={listing.id} saved={wishlist.saved} isSignedIn={wishlist.isSignedIn} />
+        {(wishlist || canCompare) && (
+          <div className="absolute right-3 top-3 flex flex-col gap-2">
+            {wishlist && (
+              <WishlistButton listingId={listing.id} saved={wishlist.saved} isSignedIn={wishlist.isSignedIn} />
+            )}
+            {canCompare && (
+              <CompareButton
+                item={{
+                  id: listing.id,
+                  title: listing.title,
+                  slug: listing.slug,
+                  coverImageUrl: listing.coverImageUrl,
+                  vehicleTypeId: listing.vehicleType.id,
+                  vehicleTypeName: listing.vehicleType.name,
+                }}
+              />
+            )}
           </div>
         )}
 

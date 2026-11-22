@@ -1,3 +1,4 @@
+import { CompareTray } from "@/components/listing/CompareTray";
 import Footer from "@/components/shared/Footer";
 import { MobileBottomNav } from "@/components/shared/MobileBottomNav";
 import { Navbar } from "@/components/shared/Navbar";
@@ -27,6 +28,7 @@ const PublicGroupLayout = async ({
         </main>
         <Footer />
       </div>
+      <CompareTray />
       <MobileBottomNav user={user} />
     </RealtimeProvider>
   );

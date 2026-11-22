@@ -1,5 +1,67 @@
 # Changelog
 
+## [0.12.0] — Phase 2 · Part 2b: saved searches and alerts (2026-11-22)
+
+### Added
+- **"Save search" on the listings page:**
+  - `SavedSearchCreate` sits next to sort.
+  - It opens a dialog with an optional name (the server names the search from its filters when empty), the alert frequency (Instantly, Daily digest, No alerts) and "Price drops too".
+  - It is disabled until at least one filter is set. Visitors are sent to log in and come back to the same search.
+  - When the current search is already saved (looked up server-side), it becomes a "Saved search" link to that search.
+  - Staff roles don't see it.
+- **Saved Searches pages** (`/saved-searches` and `/saved-searches/[savedSearchId]`) in the buyer, seller, dealer, dealer staff and inspector dashboards, with a sidebar entry under Activity.
+  - **List (`SavedSearchTable`):**
+    - The name with a "N new" badge, and the filter chips.
+    - Alert settings, live matches and last alert.
+    - Search by name and pagination.
+    - Results link, edit and delete for each row.
+    - A `SavedSearchLoadingTable` skeleton, plus empty and error states.
+  - **Detail:**
+    - All filter chips and the alert settings.
+    - "All results", "Edit alerts" and "Delete" buttons.
+    - The 20 latest matches as listing cards, labelled "New match" or "Price drop: ~~old~~ new", with a "New" tag for matches since the last visit.
+    - `MarkSavedSearchSeen` clears the badge after the page has shown which matches were new.
+  - **Components:** `SavedSearchUpdate` (rename and alerts) and `SavedSearchCreate` both wrap one `SavedSearchForm` (TanStack Form + zod, calling its action directly; CONVENTIONS Part G). `SavedSearchDelete` follows the Swal-confirm pattern.
+- **Data:**
+  - `_actions/savedSearchActions.ts` (every read is `no-store`).
+  - `types/saved-search.type.ts`.
+  - `components/validations/saved-search.validation.ts` (`buildSavedSearchSettingsZodSchema`, where the name is optional when saving).
+  - Frequency labels in `lib/enum.ts`.
+
+### Changed
+- Notifications: new `SAVED_SEARCH_MATCH` and `SAVED_SEARCH_PRICE_DROP` types with their own icons. The `PRICE_ALERTS` category is now labelled "Price drops & saved searches".
+
+## [0.11.0] — Phase 2 · Part 2a: price insight and compare (2026-11-22)
+
+### Added
+- **Price insight:**
+  - `listing/PriceInsight` contains `PriceInsightBadge` (Good deal, Fair price, Priced high, Not rated), `PriceInsightCard` and `PriceInsightSkeleton`.
+  - The card has a sentence for screen readers ("14% below the typical price of BDT 4,95,000"), a range bar (typical p25–p75 band, a median tick and a marker for this listing's price), and the basis ("Based on 7 similar listings (Yamaha R15 V4 · 2022–2023 · used), including recent sales").
+  - `listing/PriceInsightPanel` is the async server loader used inside `<Suspense>`. A failed request renders nothing.
+  - **Where it appears:**
+    - The public listing page, under the price box. Buyers see it only when there is a rating; the owner also sees "not enough data".
+    - The owner's edit page, above the wizard.
+    - The staff review page, where a price far below the market is a scam signal.
+- **Compare:**
+  - **The list:** `hooks/useCompare` keeps it in localStorage, with key `<app name>:compare`, up to 4 listings of one vehicle type. It syncs across tabs and components with `useSyncExternalStore`, and blocked storage falls back to an empty list.
+  - **CompareButton:** an icon on `ListingCard` (live listings on public pages, Saved and Recently Viewed) and a labelled button on the listing page. A full list or a different vehicle type shows a toast.
+  - **CompareTray:** a floating bar in the public layout, above the mobile bottom nav. It has thumbnails, remove, Clear, and "Compare N", which needs at least 2 listings. It's hidden on `/compare` and when the list is empty, and respects reduced motion.
+  - **`/compare?ids=`:** a shareable page that isn't indexed. Without ids it opens this browser's list.
+  - **CompareTable:**
+    - A sticky label column and sticky photo headers, with horizontal scroll on phones.
+    - Fixed rows: price, price insight, year, mileage, condition, colour, location and seller. Then spec rows grouped by attribute group.
+    - The best value in a row is tinted and marked "Best".
+    - A "Show differences only" toggle, a remove button per column, and an "Add a listing" column on desktop.
+  - **States:** `CompareLoading` skeleton, empty, error, and "no longer for sale". `CompareStorageSync` also removes gone listings from the stored list.
+- **Data:**
+  - `_actions/priceInsightActions.ts`: not cached in Next, because the backend caches each rating.
+  - `_actions/compareActions.ts`: revalidates every 60s, tag `listings`.
+  - `lib/compare.ts`: `MAX_COMPARE_LISTINGS`, `parseCompareIds`, `compareHref`.
+  - Types: `price-insight.type.ts` and `compare.type.ts`.
+
+### Changed
+- `ListingCard` has a new `showCompare` prop. By default it is on for live listings that link to their public page, and off for dashboard cards that pass `href`.
+
 ## [0.10.0] — Phase 2 · Part 1: offers and test rides (2026-11-22)
 
 ### Added

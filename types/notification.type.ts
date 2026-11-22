@@ -35,6 +35,8 @@ export type TNotificationType =
   | "TEST_RIDE_CANCELLED"
   | "TEST_RIDE_EXPIRED"
   | "TEST_RIDE_REMINDER"
+  | "SAVED_SEARCH_MATCH"
+  | "SAVED_SEARCH_PRICE_DROP"
   | "SYSTEM";
 
 export type INotification = {

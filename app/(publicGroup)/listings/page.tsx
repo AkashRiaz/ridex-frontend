@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import SavedSearchCreate from "@/app/(dashboardGroup)/_components/SavedSearch/SavedSearchCreate";
+import { lookupSavedSearchAction } from "@/app/(dashboardGroup)/_actions/savedSearchActions";
+import { getDashboardPath } from "@/lib/dashboardPath";
+import { isChatRole } from "@/lib/enum";
 import { siteConfig } from "@/lib/siteConfig";
+import { getMe } from "@/service/getMe";
 import { TSearchParams } from "@/types";
 import { getSearchFiltersAction } from "../_actions/searchActions";
 import { FiltersSidebar } from "../_components/Search/FiltersSidebar";
@@ -38,7 +43,12 @@ const ListingsPage = async ({ searchParams }: ListingsPageProps) => {
   const vehicleType = getValue(params.vehicleType);
   const view = getValue(params.view) === "list" ? "list" : "grid";
 
-  const filtersResult = await getSearchFiltersAction(vehicleType);
+  const [filtersResult, me] = await Promise.all([getSearchFiltersAction(vehicleType), getMe()]);
+
+  // saved searches belong to the marketplace roles (the ones with a Saved Searches page)
+  const role = me.success ? me.data?.role : undefined;
+  const canSaveSearches = isChatRole(role);
+  const savedLookup = canSaveSearches ? await lookupSavedSearchAction(params) : null;
 
   // count active filters for the mobile button (layout params excluded)
   const activeCount = Object.keys(params).filter(
@@ -89,7 +99,12 @@ const ListingsPage = async ({ searchParams }: ListingsPageProps) => {
             <Suspense>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <MobileFilters filters={filtersResult.data} activeCount={activeCount} />
-                <div className="ml-auto flex items-center gap-2">
+                <div className="ml-auto flex flex-wrap items-center gap-2">
+                  <SavedSearchCreate
+                    isSignedIn={Boolean(role)}
+                    dashboardPath={canSaveSearches ? (getDashboardPath(role) ?? null) : null}
+                    existing={savedLookup?.data?.savedSearch ?? null}
+                  />
                   <SortSelect />
                   <ViewToggle />
                 </div>

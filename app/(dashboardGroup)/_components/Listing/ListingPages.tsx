@@ -8,6 +8,8 @@ import TableBackButton from "@/components/ui/TableBackButton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
 import { ListingStatusBadge, formatRelativeDate } from "@/components/listing/ListingBits";
+import { PriceInsightSkeleton } from "@/components/listing/PriceInsight";
+import { PriceInsightPanel } from "@/components/listing/PriceInsightPanel";
 import { LISTING_STATUS_LABEL } from "@/lib/enum";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { getMe } from "@/service/getMe";
@@ -233,7 +235,11 @@ export const EditListingPage = async ({
   const step = Number(getValue(query?.step) ?? 1) || 1;
 
   return (
-    <div className="mx-auto max-w-4xl p-2 md:p-5">
+    <div className="mx-auto max-w-4xl space-y-4 p-2 md:p-5">
+      {/* rated on the saved price: it updates after the price step is saved */}
+      <Suspense fallback={<PriceInsightSkeleton />}>
+        <PriceInsightPanel listingId={listingId} showUnrated />
+      </Suspense>
       <Suspense fallback={<WizardSkeleton />}>
         <ListingWizardLoader listingId={listingId} step={step} dashboardPath={dashboardPath} />
       </Suspense>
@@ -346,6 +352,10 @@ const ListingReview = async ({ listingId, dashboardPath }: { listingId: string; 
               </div>
             ))}
           </dl>
+          {/* a price far below the market is a common scam signal */}
+          <Suspense fallback={<PriceInsightSkeleton />}>
+            <PriceInsightPanel listingId={listing.id} showUnrated />
+          </Suspense>
         </aside>
       </div>
     </div>

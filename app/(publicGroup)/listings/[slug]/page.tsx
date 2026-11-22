@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AlertTriangle, Calendar, Eye, Gauge, MapPin, Palette, Pencil, Sparkles } from "lucide-react";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
+import { CompareButton } from "@/components/listing/CompareButton";
+import { PriceInsightSkeleton } from "@/components/listing/PriceInsight";
+import { PriceInsightPanel } from "@/components/listing/PriceInsightPanel";
 import { WishlistButton } from "@/components/listing/WishlistButton";
 import { ReportDialog } from "@/components/shared/ReportDialog";
 import {
@@ -235,6 +238,19 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
                   variant="button"
                 />
               )}
+              {isLive && (
+                <CompareButton
+                  variant="button"
+                  item={{
+                    id: listing.id,
+                    title: listing.title,
+                    slug: listing.slug,
+                    coverImageUrl: listing.images.find((image) => image.isCover)?.url ?? listing.images[0]?.url ?? null,
+                    vehicleTypeId: listing.vehicleType.id,
+                    vehicleTypeName: listing.vehicleType.name,
+                  }}
+                />
+              )}
               <ShareButton title={listing.title} path={`/listings/${listing.slug}`} />
               {canEdit && ownerDashboard && (
                 <Link
@@ -247,6 +263,12 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
               )}
             </div>
           </section>
+
+          {(isLive || listing.status === "SOLD" || listing.isOwner) && (
+            <Suspense fallback={<PriceInsightSkeleton />}>
+              <PriceInsightPanel listingId={listing.id} showUnrated={Boolean(listing.isOwner)} />
+            </Suspense>
+          )}
 
           <SellerCard
             seller={listing.seller}
