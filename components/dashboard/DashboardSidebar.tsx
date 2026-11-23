@@ -47,6 +47,8 @@ export default function DashboardSidebar({ user }: NavbarProps) {
         return queueCounts?.[badge] ?? 0;
       case "verifications":
         return queueCounts?.verifications ?? 0;
+      case "loanLeads":
+        return queueCounts?.loanLeads ?? 0;
       default:
         return 0;
     }

@@ -1,5 +1,5 @@
 import { ISidebarGroup } from "@/lib/type";
-import { Bell, Bike, ClipboardCheck, Flag, History, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
+import { Bell, Bike, Building2, ClipboardCheck, Flag, History, Landmark, Layers, LayoutDashboard, ShieldCheck, Tag, UserPlus, UserRound, Users } from "lucide-react";
 
 const prefix = "/admin-dashboard";
 
@@ -29,6 +29,17 @@ export const adminRoutes: ISidebarGroup[] = [
         href: `${prefix}/verifications`,
         icon: ShieldCheck,
         badge: "verifications",
+      },
+      {
+        label: "Loan Leads",
+        href: `${prefix}/loan-leads`,
+        icon: Landmark,
+        badge: "loanLeads",
+      },
+      {
+        label: "Finance Partners",
+        href: `${prefix}/finance-partners`,
+        icon: Building2,
       },
       {
         label: "Users",

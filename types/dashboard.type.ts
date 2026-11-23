@@ -29,6 +29,8 @@ export type IQueueCounts = {
   reports: number;
   // null for moderators
   verifications: number | null;
+  // financing requests not sent to a partner yet (null for moderators)
+  loanLeads: number | null;
 };
 
 export type IListingSummary = {

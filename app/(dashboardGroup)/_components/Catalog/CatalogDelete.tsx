@@ -8,20 +8,22 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TActionState } from "@/types";
 import { deleteBrandAction } from "../../_actions/brandActions";
+import { deleteFinancePartnerAction } from "../../_actions/financePartnerActions";
 import { deleteVehicleModelAction } from "../../_actions/vehicleModelActions";
 import { deleteVehicleTypeAction } from "../../_actions/vehicleTypeActions";
 
 const DELETE_ACTIONS: Record<
-  "vehicleType" | "brand" | "vehicleModel",
+  "vehicleType" | "brand" | "vehicleModel" | "financePartner",
   { action: (id: string) => Promise<TActionState>; noun: string }
 > = {
   vehicleType: { action: deleteVehicleTypeAction, noun: "vehicle type" },
   brand: { action: deleteBrandAction, noun: "brand" },
   vehicleModel: { action: deleteVehicleModelAction, noun: "model" },
+  financePartner: { action: deleteFinancePartnerAction, noun: "finance partner" },
 };
 
 /*
- * Shared delete button for VehicleType / Brand / VehicleModel rows
+ * Shared delete button for VehicleType / Brand / VehicleModel / FinancePartner rows
  * (reference <Entity>Delete pattern: Swal confirm → action → toast → refresh).
  */
 const CatalogDelete = ({

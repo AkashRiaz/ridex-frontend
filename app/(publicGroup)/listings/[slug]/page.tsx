@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { AlertTriangle, Calendar, Eye, Gauge, MapPin, Palette, Pencil, Sparkles } from "lucide-react";
 import { ListingCard, ListingCardSkeleton } from "@/components/listing/ListingCard";
 import { CompareButton } from "@/components/listing/CompareButton";
+import { EmiCalculatorSkeleton } from "@/components/listing/EmiCalculator";
+import { EmiCalculatorPanel } from "@/components/listing/EmiCalculatorPanel";
 import { PriceInsightSkeleton } from "@/components/listing/PriceInsight";
 import { PriceInsightPanel } from "@/components/listing/PriceInsightPanel";
 import { WishlistButton } from "@/components/listing/WishlistButton";
@@ -267,6 +269,16 @@ const ListingDetailPage = async ({ params }: ListingDetailPageProps) => {
           {(isLive || listing.status === "SOLD" || listing.isOwner) && (
             <Suspense fallback={<PriceInsightSkeleton />}>
               <PriceInsightPanel listingId={listing.id} showUnrated={Boolean(listing.isOwner)} />
+            </Suspense>
+          )}
+
+          {isLive && (
+            <Suspense fallback={<EmiCalculatorSkeleton />}>
+              <EmiCalculatorPanel
+                listing={{ id: listing.id, title: listing.title, price: listing.price }}
+                isOwner={Boolean(listing.isOwner)}
+                viewer={me.data ?? null}
+              />
             </Suspense>
           )}
 

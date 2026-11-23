@@ -3,6 +3,8 @@ import {
   Role,
   TAuditAction,
   TDocumentKind,
+  TEmploymentType,
+  TLoanLeadStatus,
   TNotificationCategory,
   TOfferStatus,
   TReportAction,
@@ -210,6 +212,7 @@ export const NOTIFICATION_CATEGORY_LABEL: Record<TNotificationCategory, string> 
   ACCOUNT: "Account & safety",
   OFFERS: "Offers",
   TEST_RIDES: "Test rides",
+  FINANCING: "Financing",
 };
 
 export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, string> = {
@@ -220,6 +223,7 @@ export const NOTIFICATION_CATEGORY_DESCRIPTION: Record<TNotificationCategory, st
   ACCOUNT: "Verification decisions and report outcomes. These are always on.",
   OFFERS: "Offers and counter offers you receive, and answers to the ones you make.",
   TEST_RIDES: "Test ride requests, confirmations, cancellations and reminders.",
+  FINANCING: "Updates on your financing requests (and, for admins, new loan leads).",
 };
 
 // ============================================
@@ -306,3 +310,52 @@ export const SAVED_SEARCH_FREQUENCY_DESCRIPTION: Record<TSavedSearchAlertFrequen
 
 // mirrors SAVED_SEARCH_NAME_MAX in ridex-backend savedSearch.utils.ts
 export const SAVED_SEARCH_NAME_MAX = 80;
+
+// ============================================
+// Financing (Phase 2 · Part 3)
+// ============================================
+
+export const LOAN_LEAD_STATUS_LABEL: Record<TLoanLeadStatus, string> = {
+  NEW: "New",
+  SENT_TO_PARTNER: "Sent to partner",
+  CONTACTED: "Partner contacted",
+  APPROVED: "Approved",
+  DISBURSED: "Disbursed",
+  REJECTED: "Not approved",
+  WITHDRAWN: "Withdrawn",
+  CLOSED: "Closed",
+};
+
+export const LOAN_LEAD_STATUS_DESCRIPTION: Record<TLoanLeadStatus, string> = {
+  NEW: "We received your request and will send it to a finance partner soon.",
+  SENT_TO_PARTNER: "A finance partner has your request and will contact you.",
+  CONTACTED: "The partner is reviewing your application.",
+  APPROVED: "The partner approved your loan and will guide you through the next steps.",
+  DISBURSED: "The loan was paid out.",
+  REJECTED: "The partner could not approve this request.",
+  WITHDRAWN: "You withdrew this request.",
+  CLOSED: "This request was closed.",
+};
+
+export const EMPLOYMENT_TYPE_LABEL: Record<TEmploymentType, string> = {
+  SALARIED: "Salaried",
+  SELF_EMPLOYED: "Self-employed",
+  BUSINESS: "Business owner",
+  STUDENT: "Student",
+  OTHER: "Other",
+};
+
+// open = still being worked on (one per listing, counted against the limit)
+export const OPEN_LOAN_LEAD_STATUSES: TLoanLeadStatus[] = ["NEW", "SENT_TO_PARTNER", "CONTACTED", "APPROVED"];
+
+// admin status changes after a lead is with a partner (sending goes through "assign")
+export const LOAN_LEAD_TRANSITIONS: Record<TLoanLeadStatus, TLoanLeadStatus[]> = {
+  NEW: ["CLOSED"],
+  SENT_TO_PARTNER: ["CONTACTED", "APPROVED", "REJECTED", "CLOSED"],
+  CONTACTED: ["APPROVED", "REJECTED", "CLOSED"],
+  APPROVED: ["DISBURSED", "REJECTED", "CLOSED"],
+  DISBURSED: [],
+  REJECTED: [],
+  WITHDRAWN: [],
+  CLOSED: [],
+};

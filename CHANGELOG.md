@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.13.0] — Phase 2 · Part 3b: EMI calculator and financing requests (2026-11-22)
+
+### Added
+- **EMI calculator on the listing details page** (`components/listing/EmiCalculator.tsx`, live listings only, below the price insight):
+  - Down payment uses a slider plus an amount field, with its percent of the price shown.
+  - Tenure is picked from chips (6–48 months), and the rate is a number field.
+  - The rate starts at the platform's typical rate. Each active finance partner is a preset chip with its rate range; choosing one moves the terms into that partner's limits.
+  - Results: monthly EMI, loan amount, total interest and total cost, with a principal-versus-interest bar. Results are announced to screen readers (`aria-live`), and the bar only animates with `motion-safe`.
+  - Hints show when the down payment is below the platform minimum or the terms are outside the chosen partner's limits.
+  - The maths is in `lib/emi.ts`, the same reducing-balance formula as the backend.
+  - `EmiCalculatorPanel` (server) loads the active partners (cached 1 hour, tag `finance-partners`) and the viewer's open request for this listing. If the partner list fails, the calculator still works with the typical rate. `EmiCalculatorSkeleton` is the loading state.
+- **Apply for financing** (`LoanLeadDialog`, TanStack Form + zod):
+  - The calculator's terms are shown as a summary.
+  - Name, mobile, email and district are prefilled from the profile. The buyer adds employment, monthly income and a note, and must tick the consent box.
+  - The partner picked in the calculator is sent as the preferred partner.
+  - Visitors see "Sign in to apply for financing". Owners and staff see the calculator only.
+  - Once a request is open, the button becomes "Request sent · <status> · View status".
+- **Financing pages for buyers** (`/financing-requests` and `/financing-requests/[loanLeadId]`) in the buyer, seller, dealer, dealer staff and inspector dashboards, with a "Financing" sidebar entry:
+  - The list has All / Open / Closed tabs.
+  - The detail page shows a progress timeline (received → sent → contacted → approved → disbursed, or the step where it ended, with the reason), the terms, the details the buyer shared, the partner, and "Withdraw request" while it is still possible.
+- **Admin pages** (admin and super admin):
+  - **Loan leads** (`/loan-leads`) has status tabs with counts, a partner filter (including "Not assigned") and search. The sidebar badge counts NEW requests.
+  - **Loan lead detail** (`/loan-leads/[loanLeadId]`) shows the applicant with call/email links, the listing and terms, the internal note, the timeline and the partner contact.
+    - **Send to a finance partner** offers the buyer's choice first, warns when the terms are outside a partner's limits, and asks for confirmation.
+    - **Update status** offers only the allowed next steps. A reason is required for "Not approved" and "Closed", and the partner reference can be recorded.
+  - **Finance partners** (`/finance-partners`, `/create-finance-partner`, `/finance-partners/[financePartnerId]`):
+    - The table shows rates, limits, open leads (linked to the filtered queue), status and the active filter.
+    - The form has the logo, contact details and loan terms.
+    - Delete uses the shared `CatalogDelete`.
+- **Types and data:**
+  - `types/loan-lead.type.ts` and `types/finance-partner.type.ts`.
+  - `components/validations/loan-lead.validation.ts` and `finance-partner.validation.ts`.
+  - Actions: `(publicGroup)/_actions/financePartnerActions.ts`, `(dashboardGroup)/_actions/loanLeadActions.ts` and `financePartnerActions.ts`.
+  - `lib/enum.ts` gets the status, employment and transition labels.
+- **Notifications:** the `LOAN_LEAD_SUBMITTED` / `LOAN_LEAD_UPDATED` types (Landmark icon) and the "Financing" preference category.
+
 ## [0.12.0] — Phase 2 · Part 2b: saved searches and alerts (2026-11-22)
 
 ### Added

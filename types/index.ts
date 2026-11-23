@@ -20,3 +20,5 @@ export * from "./test-ride.type";
 export * from "./price-insight.type";
 export * from "./compare.type";
 export * from "./saved-search.type";
+export * from "./finance-partner.type";
+export * from "./loan-lead.type";

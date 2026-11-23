@@ -7,7 +7,8 @@ export type TNotificationCategory =
   | "REVIEWS"
   | "ACCOUNT"
   | "OFFERS"
-  | "TEST_RIDES";
+  | "TEST_RIDES"
+  | "FINANCING";
 
 export type TNotificationType =
   | "UNREAD_MESSAGES"
@@ -37,6 +38,8 @@ export type TNotificationType =
   | "TEST_RIDE_REMINDER"
   | "SAVED_SEARCH_MATCH"
   | "SAVED_SEARCH_PRICE_DROP"
+  | "LOAN_LEAD_SUBMITTED"
+  | "LOAN_LEAD_UPDATED"
   | "SYSTEM";
 
 export type INotification = {

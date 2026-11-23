@@ -2,7 +2,7 @@ import { IUserResponse } from "@/types";
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
-export type TSidebarBadge = "chat" | "notifications" | "listings" | "reports" | "verifications";
+export type TSidebarBadge = "chat" | "notifications" | "listings" | "reports" | "verifications" | "loanLeads";
 
 export type ISidebarItem = {
   label: string;
